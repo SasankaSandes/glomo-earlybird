@@ -1,0 +1,182 @@
+{
+  "Dove": [
+    {
+      "product_name": "Shampoo Hair Fall Rescue Bio Protein",
+      "type": "hair_shampoo",
+      "mrp_lkr": 750,
+      "sizes": ["180ml"]
+    },
+    {
+      "product_name": "Shampoo Daily Shine",
+      "type": "hair_shampoo",
+      "mrp_lkr": 920,
+      "sizes": ["180ml"]
+    },
+    {
+      "product_name": "Shampoo Oxygen Moisture",
+      "type": "hair_shampoo",
+      "mrp_lkr": 750,
+      "sizes": ["180ml"]
+    },
+    {
+      "product_name": "Shampoo Intense Repair",
+      "type": "hair_shampoo",
+      "mrp_lkr": 750,
+      "sizes": ["180ml"]
+    },
+    {
+      "product_name": "Conditioner Intense Repair",
+      "type": "hair_conditioner",
+      "mrp_lkr": 830,
+      "sizes": ["180ml"]
+    },
+    {
+      "product_name": "Conditioner Oxygen Moisture",
+      "type": "hair_conditioner",
+      "mrp_lkr": 830,
+      "sizes": ["180ml"]
+    },
+    {
+      "product_name": "Body Lotion Silky (Tub)",
+      "type": "body_lotion",
+      "mrp_lkr": 2300,
+      "sizes": ["300ml"]
+    }
+  ],
+  "Sunsilk": [
+    {
+      "product_name": "Shampoo Soft & Smooth",
+      "type": "hair_shampoo",
+      "mrp_lkr": 625,
+      "sizes": ["180ml"]
+    },
+    {
+      "product_name": "Shampoo Black Shine",
+      "type": "hair_shampoo",
+      "mrp_lkr": 625,
+      "sizes": ["180ml"]
+    },
+    {
+      "product_name": "Shampoo Healthy Grow",
+      "type": "hair_shampoo",
+      "mrp_lkr": 625,
+      "sizes": ["180ml"]
+    }
+  ],
+  "Head & Shoulders": [
+    {
+      "product_name": "Anti Dandruff Shampoo Smooth & Silky",
+      "type": "hair_shampoo",
+      "mrp_lkr": 810,
+      "sizes": ["180ml"]
+    },
+    {
+      "product_name": "Anti Dandruff Shampoo Cool Menthol",
+      "type": "hair_shampoo",
+      "mrp_lkr": 810,
+      "sizes": ["180ml"]
+    },
+    {
+      "product_name": "Anti Dandruff Shampoo Lemon Fresh",
+      "type": "hair_shampoo",
+      "mrp_lkr": 810,
+      "sizes": ["180ml"]
+    },
+    {
+      "product_name": "Anti Dandruff Shampoo + Conditioner 2in1 Active Protect",
+      "type": "hair_shampoo_conditioner",
+      "mrp_lkr": 1020,
+      "sizes": ["180ml"]
+    }
+  ],
+  "Vaseline": [
+    {
+      "product_name": "Body Lotion Cocoa Glow",
+      "type": "body_lotion",
+      "mrp_lkr": 820,
+      "sizes": ["100ml"]
+    },
+    {
+      "product_name": "Body Lotion Advanced Repair",
+      "type": "body_lotion",
+      "mrp_lkr": 1020,
+      "sizes": ["100ml"]
+    }
+  ],
+  "Nature's Secrets": [
+    {
+      "product_name": "Cucumber Face Wash",
+      "type": "face_wash",
+      "mrp_lkr": 277,
+      "sizes": ["100ml"]
+    },
+    {
+      "product_name": "Peppermint Face Wash",
+      "type": "face_wash",
+      "mrp_lkr": 277,
+      "sizes": ["100ml"]
+    },
+    {
+      "product_name": "Deep Cleansing Milk Aloe Vera",
+      "type": "cleanser",
+      "mrp_lkr": 277,
+      "sizes": ["100ml"]
+    },
+    {
+      "product_name": "Face Wash Men Aloe Mint",
+      "type": "face_wash",
+      "mrp_lkr": 650,
+      "sizes": ["80ml"]
+    },
+    {
+      "product_name": "Face Wash Brightening",
+      "type": "face_wash",
+      "mrp_lkr": 650,
+      "sizes": ["80ml"]
+    },
+    {
+      "product_name": "Face Wash Oil Control",
+      "type": "face_wash",
+      "mrp_lkr": 650,
+      "sizes": ["80ml"]
+    },
+    {
+      "product_name": "Body Lotion Aloe Vera",
+      "type": "body_lotion",
+      "mrp_lkr": 400,
+      "sizes": ["200ml"]
+    },
+    {
+      "product_name": "Body Lotion Carrot",
+      "type": "body_lotion",
+      "mrp_lkr": 375,
+      "sizes": ["200ml"]
+    }
+  ],
+  "British Cosmetics (Miracle)": [
+    {
+      "product_name": "Damaged Repair Shampoo",
+      "type": "hair_shampoo",
+      "mrp_lkr": 560,
+      "sizes": ["200ml", "300ml", "1l"]
+    },
+    {
+      "product_name": "Hydro Boost Shampoo",
+      "type": "hair_shampoo",
+      "mrp_lkr": 560,
+      "sizes": ["200ml", "300ml", "1l"]
+    },
+    {
+      "product_name": "Hydro Boost Conditioner",
+      "type": "hair_conditioner",
+      "mrp_lkr": 560,
+      "sizes": ["200ml", "300ml", "1l"]
+    },
+    {
+      "product_name": "Anti Frizz Hair Gloss Serum",
+      "type": "hair_serum",
+      "mrp_lkr": 525,
+      "sizes": []
+    }
+  ]
+}

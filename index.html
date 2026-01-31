@@ -8,8 +8,6 @@
   <!-- Bulma -->
   <link rel="stylesheet" href="css/bulma.min.css">
   <link rel="stylesheet" href="css/main.css">
-
-
 </head>
 
 <body>
@@ -44,11 +42,6 @@
                 <input class="input" type="tel" name="customer_whatsapp" placeholder="e.g. +94 77 123 4567" required>
                 <p class="help">We’ll message your curated basket link here.</p>
               </div>
-
-              <div class="column is-12">
-                <label class="label">Your goal (optional)</label>
-                <input class="input" type="text" name="goal" placeholder="e.g. acne care, dandruff, hydration, anti-frizz, sensitive skin">
-              </div>
             </div>
 
             <hr style="border-color: var(--line);">
@@ -59,15 +52,14 @@
                 <h2 class="title is-5 mb-1" style="color:var(--text);">Add your favourite products</h2>
                 <p class="fineprint">Brand + Name + Size (Images optional). Add as many as you want.</p>
               </div>
-
-              <button type="button" id="addProductBtn" class="button btn-ghost">
-                + Add product
-              </button>
             </div>
 
             <div id="productsWrap" class="block" style="display:flex; flex-direction:column; gap:12px;">
               <!-- Product rows injected here -->
             </div>
+            <button type="button" id="addProductBtn" class="button btn-ghost">
+                + Add another product
+              </button>
 
             <hr style="border-color: var(--line);">
 
@@ -104,12 +96,14 @@
       <div class="columns is-multiline is-variable is-2">
         <div class="column is-12">
           <label class="label">Brand</label>
-          <input class="input" type="text" name="products[IDX][brand]" placeholder="e.g. Beauty of Joseon" required>
+          <input class="input brand-input" type="text" name="products[IDX][brand]" placeholder="e.g. Beauty of Joseon" required list="brandList-IDX">
+          <datalist id="brandList-IDX"></datalist>
         </div>
 
         <div class="column is-12">
           <label class="label">Product name</label>
-          <input class="input" type="text" name="products[IDX][name]" placeholder="e.g. Relief Sun: Rice + Probiotics" required>
+          <input class="input product-input" type="text" name="products[IDX][name]" placeholder="e.g. Relief Sun: Rice + Probiotics" required list="productList-IDX">
+          <datalist id="productList-IDX"></datalist>
         </div>
 
         <div class="column is-12">
@@ -145,6 +139,88 @@
     const addBtn = document.getElementById("addProductBtn");
     const tpl = document.getElementById("productRowTpl");
 
+    // --- Autocomplete data (brands + products) ---
+    // Expects brands-and-products.json to be served from the same directory as this HTML.
+    let BRAND_PRODUCTS = {};
+    let BRAND_LIST = [];
+    const BRAND_LOOKUP = new Map(); // lowercased brand -> canonical brand
+
+    function canonicalBrand(input) {
+      const key = (input || "").trim().toLowerCase();
+      return BRAND_LOOKUP.get(key) || null;
+    }
+
+    function setDatalistOptions(datalistEl, values) {
+      if (!datalistEl) return;
+      datalistEl.innerHTML = "";
+      (values || []).forEach(v => {
+        const opt = document.createElement("option");
+        opt.value = v;
+        datalistEl.appendChild(opt);
+      });
+    }
+
+    async function loadBrandProducts() {
+      try {
+        const res = await fetch("brands-and-products.json", { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to load brands-and-products.json");
+        BRAND_PRODUCTS = await res.json();
+
+        BRAND_LIST = Object.keys(BRAND_PRODUCTS).sort((a,b) => a.localeCompare(b));
+        BRAND_LOOKUP.clear();
+        BRAND_LIST.forEach(b => BRAND_LOOKUP.set(b.toLowerCase(), b));
+
+        // Populate existing rows (if any)
+        [...productsWrap.children].forEach(block => setupAutocompleteForRow(block));
+      } catch (err) {
+        console.warn(err);
+        // If JSON fails to load, form still works normally (no suggestions).
+      }
+    }
+
+    function setupAutocompleteForRow(block) {
+      if (!block) return;
+
+      const brandInput = block.querySelector(".brand-input");
+      const productInput = block.querySelector(".product-input");
+
+      // The datalists are inside the block; list="" points to their IDs
+      const brandListId = brandInput?.getAttribute("list");
+      const productListId = productInput?.getAttribute("list");
+
+      const brandDatalist = brandListId ? document.getElementById(brandListId) : null;
+      const productDatalist = productListId ? document.getElementById(productListId) : null;
+
+      // Brand suggestions (always the full brand list)
+      if (BRAND_LIST.length) setDatalistOptions(brandDatalist, BRAND_LIST);
+
+      function refreshProductSuggestions() {
+        const selectedBrand = canonicalBrand(brandInput.value);
+        if (!selectedBrand) {
+          // No matching brand selected/typed; show no brand-linked product suggestions
+          setDatalistOptions(productDatalist, []);
+          return;
+        }
+
+        const products = (BRAND_PRODUCTS[selectedBrand] || [])
+          .map(p => p.product_name)
+          .filter(Boolean);
+
+        // Deduplicate + sort
+        const unique = [...new Set(products)].sort((a,b) => a.localeCompare(b));
+        setDatalistOptions(productDatalist, unique);
+      }
+
+      // Update product suggestions as brand changes (typing or choosing from dropdown)
+      if (brandInput) {
+        brandInput.addEventListener("input", refreshProductSuggestions);
+        brandInput.addEventListener("change", refreshProductSuggestions);
+      }
+
+      // Initialize suggestions for prefilled values (if any)
+      refreshProductSuggestions();
+    }
+
     // Add 1 default row
     addProductRow();
 
@@ -158,9 +234,16 @@
       const block = node.querySelector(".product-block");
       block.querySelector(".product-index").textContent = (idx + 1);
 
-      // Replace IDX in all name attributes
+      // Replace IDX in all name attributes + datalist IDs + list attributes
+      // (keep everything else the same)
       block.querySelectorAll("[name]").forEach(el => {
         el.name = el.name.replaceAll("IDX", idx);
+      });
+      block.querySelectorAll("datalist[id]").forEach(el => {
+        el.id = el.id.replaceAll("IDX", idx);
+      });
+      block.querySelectorAll("input[list]").forEach(el => {
+        el.setAttribute("list", el.getAttribute("list").replaceAll("IDX", idx));
       });
 
       // Remove handler
@@ -188,15 +271,35 @@
       });
 
       productsWrap.appendChild(node);
+
+      // Attach autocomplete to the newly added row (if data is loaded)
+      const addedBlock = productsWrap.lastElementChild;
+      setupAutocompleteForRow(addedBlock);
     }
 
     function reindexRows() {
       [...productsWrap.children].forEach((block, newIdx) => {
         block.querySelector(".product-index").textContent = (newIdx + 1);
+
+        // Update input names: products[old] -> products[new]
         block.querySelectorAll("[name]").forEach(el => {
-          // Convert products[old][x] -> products[new][x]
           el.name = el.name.replace(/products\\[\\d+\\]/, `products[${newIdx}]`);
         });
+
+        // Update datalist IDs + input list attributes to stay unique and aligned per row
+        const brandInput = block.querySelector(".brand-input");
+        const productInput = block.querySelector(".product-input");
+        const brandDatalist = block.querySelector("datalist[id^='brandList-']");
+        const productDatalist = block.querySelector("datalist[id^='productList-']");
+
+        if (brandDatalist) brandDatalist.id = `brandList-${newIdx}`;
+        if (productDatalist) productDatalist.id = `productList-${newIdx}`;
+
+        if (brandInput) brandInput.setAttribute("list", `brandList-${newIdx}`);
+        if (productInput) productInput.setAttribute("list", `productList-${newIdx}`);
+
+        // Refresh autocomplete bindings/content for this row
+        setupAutocompleteForRow(block);
       });
     }
 
@@ -213,6 +316,9 @@
       productsWrap.innerHTML = "";
       addProductRow();
     });
+
+    // Load JSON once at startup
+    loadBrandProducts();
   </script>
 </body>
 </html>
