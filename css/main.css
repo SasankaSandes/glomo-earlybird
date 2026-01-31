@@ -176,23 +176,20 @@
 
   /* -------------------------------------------
    Mobile-first immersive layout adjustments
-   (Add this at the END of your current CSS)
 -------------------------------------------- */
 
-/* Default container behavior stays, but we'll control width responsively */
 .glomo-wrap .container {
   max-width: 100%;
 }
 
 /* MOBILE: immersive (edge-to-edge) */
 @media (max-width: 599px) {
-  /* Make the section feel immersive */
   .glomo-wrap {
-    align-items: stretch; /* instead of vertical centering */
+    align-items: stretch;
   }
 
   .section.glomo-wrap {
-    padding: 0 !important; /* remove Bulma default spacing */
+    padding: 0 !important;
   }
 
   .glomo-wrap .container {
@@ -202,14 +199,13 @@
   }
 
   .glomo-card {
-    border-radius: 0;          /* edge-to-edge */
+    border-radius: 0;
     border-left: 0;
     border-right: 0;
-    box-shadow: none;          /* cleaner, more app-like */
-    min-height: 100vh;         /* immersive */
+    box-shadow: none;
+    min-height: 100vh;
   }
 
-  /* Slightly tighter padding for mobile */
   .glomo-card__top {
     padding: 18px 16px 12px;
   }
@@ -218,18 +214,66 @@
   }
 }
 
-/* TABLET/DESKTOP: centered, max 425px */
+/* TABLET/DESKTOP */
 @media (min-width: 599px) {
   .glomo-wrap {
-    align-items: center; /* keep centered as now */
+    align-items: center;
   }
 
   .glomo-wrap .container {
-    max-width: 600px !important; /* mobile-first width even on desktop */
-    padding: 0 14px;             /* comfortable outer breathing space */
+    max-width: 600px !important;
+    padding: 0 14px;
   }
 
   .section.glomo-wrap {
-    padding: 3rem 1.5rem; /* Bulma-like spacing, feel as now */
+    padding: 3rem 1.5rem;
   }
+}
+
+/* -----------------------------
+   Autocomplete dropdown (mobile-friendly)
+   ----------------------------- */
+.ac-wrap { position: relative; }
+
+.ac-menu{
+  position: absolute;
+  left: 0; right: 0;
+  top: calc(100% + 6px);
+  z-index: 40;
+
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 14px 40px rgba(0,0,0,.10);
+
+  max-height: 240px;
+  overflow: auto;
+
+  padding: 6px;
+  display: none;
+}
+
+.ac-menu.is-active{ display: block; }
+
+.ac-item{
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  line-height: 1.2;
+  color: var(--text);
+  user-select: none;
+}
+
+.ac-item:hover{
+  background: rgba(0,0,0,.05);
+}
+
+.ac-item:active{
+  transform: translateY(1px);
+}
+
+.ac-empty{
+  padding: 10px 12px;
+  color: rgba(0,0,0,.55);
+  font-size: 13px;
 }

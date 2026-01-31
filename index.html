@@ -96,14 +96,18 @@
       <div class="columns is-multiline is-variable is-2">
         <div class="column is-12">
           <label class="label">Brand</label>
-          <input class="input brand-input" type="text" name="products[IDX][brand]" placeholder="e.g. Beauty of Joseon" required list="brandList-IDX">
-          <datalist id="brandList-IDX"></datalist>
+          <div class="ac-wrap">
+          <input class="input brand-input" type="text" name="products[IDX][brand]" placeholder="e.g. Beauty of Joseon" required autocomplete="off">
+          <div class="ac-menu brand-menu" role="listbox" aria-label="Brand suggestions"></div>
+          </div>
         </div>
 
         <div class="column is-12">
           <label class="label">Product name</label>
-          <input class="input product-input" type="text" name="products[IDX][name]" placeholder="e.g. Relief Sun: Rice + Probiotics" required list="productList-IDX">
-          <datalist id="productList-IDX"></datalist>
+          <div class="ac-wrap">
+          <input class="input product-input" type="text" name="products[IDX][name]" placeholder="e.g. Relief Sun: Rice + Probiotics" required autocomplete="off">
+          <div class="ac-menu product-menu" role="listbox" aria-label="Product suggestions"></div>
+          </div>
         </div>
 
         <div class="column is-12">
@@ -140,24 +144,19 @@
     const tpl = document.getElementById("productRowTpl");
 
     // --- Autocomplete data (brands + products) ---
-    // Expects brands-and-products.json to be served from the same directory as this HTML.
+    // Note: This will only work when served via http(s) (e.g., Live Server / local server), not file://
     let BRAND_PRODUCTS = {};
     let BRAND_LIST = [];
     const BRAND_LOOKUP = new Map(); // lowercased brand -> canonical brand
+    let dataLoaded = false;
 
     function canonicalBrand(input) {
       const key = (input || "").trim().toLowerCase();
       return BRAND_LOOKUP.get(key) || null;
     }
 
-    function setDatalistOptions(datalistEl, values) {
-      if (!datalistEl) return;
-      datalistEl.innerHTML = "";
-      (values || []).forEach(v => {
-        const opt = document.createElement("option");
-        opt.value = v;
-        datalistEl.appendChild(opt);
-      });
+    function uniqSorted(arr) {
+      return [...new Set(arr)].sort((a, b) => a.localeCompare(b));
     }
 
     async function loadBrandProducts() {
@@ -165,61 +164,120 @@
         const res = await fetch("brands-and-products.json", { cache: "no-store" });
         if (!res.ok) throw new Error("Failed to load brands-and-products.json");
         BRAND_PRODUCTS = await res.json();
-
-        BRAND_LIST = Object.keys(BRAND_PRODUCTS).sort((a,b) => a.localeCompare(b));
+        BRAND_LIST = Object.keys(BRAND_PRODUCTS).sort((a, b) => a.localeCompare(b));
         BRAND_LOOKUP.clear();
         BRAND_LIST.forEach(b => BRAND_LOOKUP.set(b.toLowerCase(), b));
+        dataLoaded = true;
 
-        // Populate existing rows (if any)
+        // Attach autocomplete to any existing rows
         [...productsWrap.children].forEach(block => setupAutocompleteForRow(block));
       } catch (err) {
         console.warn(err);
-        // If JSON fails to load, form still works normally (no suggestions).
+        dataLoaded = false; // form still works without suggestions
       }
+    }
+
+    // --- Dropdown helpers ---
+    function openMenu(menuEl) { menuEl?.classList.add("is-active"); }
+    function closeMenu(menuEl) { menuEl?.classList.remove("is-active"); }
+
+    function renderMenu(menuEl, items, onPick) {
+      if (!menuEl) return;
+      menuEl.innerHTML = "";
+
+      if (!items || items.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "ac-empty";
+        empty.textContent = "No matches — you can type your own.";
+        menuEl.appendChild(empty);
+        return;
+      }
+
+      items.slice(0, 30).forEach((label) => {
+        const div = document.createElement("div");
+        div.className = "ac-item";
+        div.setAttribute("role", "option");
+        div.textContent = label;
+
+        // mousedown fires before blur, so selection works on mobile too
+        div.addEventListener("mousedown", (e) => {
+          e.preventDefault();
+          onPick(label);
+        });
+
+        menuEl.appendChild(div);
+      });
+    }
+
+    function filterList(list, query) {
+      const q = (query || "").trim().toLowerCase();
+      if (!q) return list.slice(0, 30);
+      return list.filter(x => x.toLowerCase().includes(q)).slice(0, 30);
+    }
+
+    function productsForBrand(brandValue) {
+      const b = canonicalBrand(brandValue);
+      if (!b) return [];
+      const raw = (BRAND_PRODUCTS[b] || []).map(p => p.product_name).filter(Boolean);
+      return uniqSorted(raw);
     }
 
     function setupAutocompleteForRow(block) {
-      if (!block) return;
+      if (!dataLoaded || !block) return;
 
       const brandInput = block.querySelector(".brand-input");
       const productInput = block.querySelector(".product-input");
+      const brandMenu = block.querySelector(".brand-menu");
+      const productMenu = block.querySelector(".product-menu");
 
-      // The datalists are inside the block; list="" points to their IDs
-      const brandListId = brandInput?.getAttribute("list");
-      const productListId = productInput?.getAttribute("list");
+      if (!brandInput || !productInput || !brandMenu || !productMenu) return;
 
-      const brandDatalist = brandListId ? document.getElementById(brandListId) : null;
-      const productDatalist = productListId ? document.getElementById(productListId) : null;
+      // Prevent duplicate bindings if reindexRows() calls this again
+      if (block.dataset.acBound === "1") return;
+      block.dataset.acBound = "1";
 
-      // Brand suggestions (always the full brand list)
-      if (BRAND_LIST.length) setDatalistOptions(brandDatalist, BRAND_LIST);
+      function refreshBrandMenu() {
+        renderMenu(brandMenu, filterList(BRAND_LIST, brandInput.value), (picked) => {
+          brandInput.value = picked;
+          closeMenu(brandMenu);
 
-      function refreshProductSuggestions() {
-        const selectedBrand = canonicalBrand(brandInput.value);
-        if (!selectedBrand) {
-          // No matching brand selected/typed; show no brand-linked product suggestions
-          setDatalistOptions(productDatalist, []);
-          return;
-        }
-
-        const products = (BRAND_PRODUCTS[selectedBrand] || [])
-          .map(p => p.product_name)
-          .filter(Boolean);
-
-        // Deduplicate + sort
-        const unique = [...new Set(products)].sort((a,b) => a.localeCompare(b));
-        setDatalistOptions(productDatalist, unique);
+          // after selecting brand, refresh product list and nudge user to product field
+          refreshProductMenu(true);
+          productInput.focus();
+        });
       }
 
-      // Update product suggestions as brand changes (typing or choosing from dropdown)
-      if (brandInput) {
-        brandInput.addEventListener("input", refreshProductSuggestions);
-        brandInput.addEventListener("change", refreshProductSuggestions);
+      function refreshProductMenu(openIfNeeded = false) {
+        const list = productsForBrand(brandInput.value);
+        renderMenu(productMenu, filterList(list, productInput.value), (picked) => {
+          productInput.value = picked;
+          closeMenu(productMenu);
+        });
+
+        if (openIfNeeded) openMenu(productMenu);
       }
 
-      // Initialize suggestions for prefilled values (if any)
-      refreshProductSuggestions();
+      // BRAND interactions
+      brandInput.addEventListener("focus", () => { refreshBrandMenu(); openMenu(brandMenu); });
+      brandInput.addEventListener("input", () => { refreshBrandMenu(); openMenu(brandMenu); });
+      brandInput.addEventListener("change", () => { refreshProductMenu(false); });
+
+      // PRODUCT interactions
+      productInput.addEventListener("focus", () => { refreshProductMenu(); openMenu(productMenu); });
+      productInput.addEventListener("input", () => { refreshProductMenu(); openMenu(productMenu); });
+
+      // Close on blur (small delay allows tap selection)
+      brandInput.addEventListener("blur", () => setTimeout(() => closeMenu(brandMenu), 120));
+      productInput.addEventListener("blur", () => setTimeout(() => closeMenu(productMenu), 120));
     }
+
+    // One global outside-click handler (doesn't get duplicated per row)
+    document.addEventListener("mousedown", (e) => {
+      document.querySelectorAll(".ac-menu.is-active").forEach(menu => {
+        const wrap = menu.closest(".ac-wrap");
+        if (wrap && !wrap.contains(e.target)) closeMenu(menu);
+      });
+    });
 
     // Add 1 default row
     addProductRow();
@@ -234,16 +292,9 @@
       const block = node.querySelector(".product-block");
       block.querySelector(".product-index").textContent = (idx + 1);
 
-      // Replace IDX in all name attributes + datalist IDs + list attributes
-      // (keep everything else the same)
+      // Replace IDX in all name attributes
       block.querySelectorAll("[name]").forEach(el => {
         el.name = el.name.replaceAll("IDX", idx);
-      });
-      block.querySelectorAll("datalist[id]").forEach(el => {
-        el.id = el.id.replaceAll("IDX", idx);
-      });
-      block.querySelectorAll("input[list]").forEach(el => {
-        el.setAttribute("list", el.getAttribute("list").replaceAll("IDX", idx));
       });
 
       // Remove handler
@@ -272,34 +323,17 @@
 
       productsWrap.appendChild(node);
 
-      // Attach autocomplete to the newly added row (if data is loaded)
-      const addedBlock = productsWrap.lastElementChild;
-      setupAutocompleteForRow(addedBlock);
+      // Attach autocomplete for this row (if data already loaded)
+      setupAutocompleteForRow(productsWrap.lastElementChild);
     }
 
     function reindexRows() {
       [...productsWrap.children].forEach((block, newIdx) => {
         block.querySelector(".product-index").textContent = (newIdx + 1);
-
-        // Update input names: products[old] -> products[new]
         block.querySelectorAll("[name]").forEach(el => {
+          // Convert products[old][x] -> products[new][x]
           el.name = el.name.replace(/products\\[\\d+\\]/, `products[${newIdx}]`);
         });
-
-        // Update datalist IDs + input list attributes to stay unique and aligned per row
-        const brandInput = block.querySelector(".brand-input");
-        const productInput = block.querySelector(".product-input");
-        const brandDatalist = block.querySelector("datalist[id^='brandList-']");
-        const productDatalist = block.querySelector("datalist[id^='productList-']");
-
-        if (brandDatalist) brandDatalist.id = `brandList-${newIdx}`;
-        if (productDatalist) productDatalist.id = `productList-${newIdx}`;
-
-        if (brandInput) brandInput.setAttribute("list", `brandList-${newIdx}`);
-        if (productInput) productInput.setAttribute("list", `productList-${newIdx}`);
-
-        // Refresh autocomplete bindings/content for this row
-        setupAutocompleteForRow(block);
       });
     }
 
