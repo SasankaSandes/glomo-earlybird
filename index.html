@@ -1,13 +1,18 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Glomo Earlybird – Curated Basket</title>
+  <title>Glomo – Personalised beauty basket</title>
 
   <!-- Bulma -->
   <link rel="stylesheet" href="css/bulma.min.css">
   <link rel="stylesheet" href="css/main.css">
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
+  <link rel="icon" type="image/png" href="favicon.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="favicon.png" sizes="16x16">
+
 </head>
 
 <body>
@@ -16,10 +21,10 @@
       <div class="glomo-card">
         <div class="glomo-card__top">
           <div class="brand-row">
-              <!-- Replace src with your hosted logo path (example: /assets/glomo-square-logo.png) -->
-              <img class="logo mb-2" src="glomo-logo.png" alt="Glomo logo">
+            <!-- Replace src with your hosted logo path (example: /assets/glomo-square-logo.png) -->
+            <img class="logo mb-2" src="glomo-logo.png" alt="Glomo logo">
             <div>
-              <h1 class="title is-6 mb-3" >Personalised beauty basket</h1>
+              <h1 class="title is-6 mb-3">Personalised beauty basket</h1>
               <p class="subtitle is-7 mb-2">
                 Tell us all your favourites products. We’ll create a personalised basket just for you.<br><br>
                 You can order products from your basket as you like with a simple WhatsApp message.<br><br>
@@ -56,13 +61,14 @@
               <!-- Product rows injected here -->
             </div>
             <button type="button" id="addProductBtn" class="button btn-ghost">
-                + Add another product
-              </button>
+              + Add another product
+            </button>
 
             <div class="columns is-vcentered mt-5">
               <div class="column is-12">
                 <p class="fineprint">
-                  After we create your personalised basket, you can request changes anytime (add/remove products and change sizes).
+                  After we create your personalised basket, you can request changes anytime (add/remove products and
+                  change sizes).
                 </p>
               </div>
               <div class="column is-12 has-text-right">
@@ -77,7 +83,7 @@
       </div>
 
       <a href="https://glomo.lk" target="_blank" class="copyright has-text-centered mt-4 fineprint">
-        © Glomo.lk 
+        © Glomo.lk
       </a>
     </div>
   </section>
@@ -93,16 +99,18 @@
         <div class="column is-12">
           <label class="label">Brand</label>
           <div class="ac-wrap">
-          <input class="input brand-input" type="text" name="products[IDX][brand]" placeholder="e.g. Beauty of Joseon" required autocomplete="off">
-          <div class="ac-menu brand-menu" role="listbox" aria-label="Brand suggestions"></div>
+            <input class="input brand-input" type="text" name="products[IDX][brand]" placeholder="e.g. Beauty of Joseon"
+              required autocomplete="off">
+            <div class="ac-menu brand-menu" role="listbox" aria-label="Brand suggestions"></div>
           </div>
         </div>
 
         <div class="column is-12">
           <label class="label">Product name</label>
           <div class="ac-wrap">
-          <input class="input product-input" type="text" name="products[IDX][name]" placeholder="e.g. Relief Sun: Rice + Probiotics" required autocomplete="off">
-          <div class="ac-menu product-menu" role="listbox" aria-label="Product suggestions"></div>
+            <input class="input product-input" type="text" name="products[IDX][name]"
+              placeholder="e.g. Relief Sun: Rice + Probiotics" required autocomplete="off">
+            <div class="ac-menu product-menu" role="listbox" aria-label="Product suggestions"></div>
           </div>
         </div>
 
@@ -355,4 +363,5 @@
     loadBrandProducts();
   </script>
 </body>
+
 </html>
