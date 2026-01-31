@@ -7,122 +7,9 @@
 
   <!-- Bulma -->
   <link rel="stylesheet" href="css/bulma.min.css">
+  <link rel="stylesheet" href="css/main.css">
 
-  <style>
-    :root{
-      --bg:#0b0b0c;
-      --panel:#0f0f10;
-      --text:#f5f5f7;
-      --muted:#b9b9c0;
-      --line:rgba(255,255,255,.10);
 
-      /* Logo-inspired accents (cyan → pink → gold) */
-      --c1:#00d1ff;
-      --c2:#ff4fd8;
-      --c3:#ffd166;
-    }
-
-    html, body { background: var(--bg); color: var(--text); }
-    .glomo-wrap { min-height: 100vh; display:flex; align-items:center; }
-    .glomo-card{
-      background: rgba(255,255,255,.03);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      box-shadow: 0 20px 60px rgba(0,0,0,.55);
-      overflow: hidden;
-    }
-    .glomo-card__top{
-      padding: 22px 22px 14px;
-      border-bottom: 1px solid var(--line);
-      background:
-        radial-gradient(1200px 200px at 10% 0%, rgba(0,209,255,.16), transparent 60%),
-        radial-gradient(1200px 200px at 60% 0%, rgba(255,79,216,.14), transparent 55%),
-        radial-gradient(1200px 240px at 95% 0%, rgba(255,209,102,.12), transparent 55%),
-        rgba(255,255,255,.02);
-    }
-    .brand-row { display:flex; align-items:center; gap:12px; }
-    .brand-mark{
-      width: 40px; height: 40px; border-radius: 12px;
-      border: 1px solid var(--line);
-      background: linear-gradient(135deg, rgba(0,209,255,.18), rgba(255,79,216,.16), rgba(255,209,102,.14));
-      display:grid; place-items:center;
-      overflow:hidden;
-    }
-    .brand-mark img{ width:100%; height:100%; object-fit:cover; display:block; }
-
-    .glomo-card__body{ padding: 20px 22px 22px; }
-    .help, .subtitle, .label{ color: var(--muted) !important; }
-
-    /* Inputs */
-    .input, .textarea, .select select{
-      background: rgba(0,0,0,.35) !important;
-      border-color: rgba(255,255,255,.14) !important;
-      color: var(--text) !important;
-      border-radius: 12px;
-    }
-    .input::placeholder, .textarea::placeholder { color: rgba(245,245,247,.45); }
-    .input:focus, .textarea:focus, .select select:focus{
-      box-shadow: 0 0 0 3px rgba(0,209,255,.18) !important;
-      border-color: rgba(0,209,255,.55) !important;
-    }
-
-    /* Buttons */
-    .btn-gradient{
-      border: 0;
-      color: #0b0b0c !important;
-      background: linear-gradient(90deg, var(--c1), var(--c2), var(--c3));
-      border-radius: 14px;
-      font-weight: 800;
-      letter-spacing: .2px;
-    }
-    .btn-ghost{
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.14);
-      color: var(--text) !important;
-      border-radius: 14px;
-      font-weight: 700;
-    }
-    .btn-danger-ghost{
-      background: rgba(255,79,216,.10);
-      border: 1px solid rgba(255,79,216,.35);
-      color: var(--text) !important;
-      border-radius: 12px;
-      font-weight: 700;
-    }
-
-    /* Product rows */
-    .product-block{
-      border: 1px solid var(--line);
-      background: rgba(0,0,0,.25);
-      border-radius: 16px;
-      padding: 14px;
-    }
-    .product-block__head{
-      display:flex; justify-content:space-between; align-items:center;
-      margin-bottom: 10px;
-    }
-    .tag.is-dark{
-      background: rgba(255,255,255,.08) !important;
-      border: 1px solid rgba(255,255,255,.10);
-      color: var(--text) !important;
-    }
-    .thumb{
-      width: 56px; height: 56px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.04);
-      overflow:hidden;
-      display:grid; place-items:center;
-      font-size: 12px;
-      color: rgba(245,245,247,.55);
-    }
-    .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
-
-    .fineprint{
-      font-size: 12px;
-      color: rgba(245,245,247,.55);
-    }
-  </style>
 </head>
 
 <body>
@@ -148,11 +35,11 @@
           <form id="earlybirdForm" action="#" method="post" enctype="multipart/form-data">
             <!-- Customer details -->
             <div class="columns is-multiline">
-              <div class="column is-6">
+              <div class="column is-12">
                 <label class="label">Full name</label>
                 <input class="input" type="text" name="customer_name" placeholder="Your name" required>
               </div>
-              <div class="column is-6">
+              <div class="column is-12">
                 <label class="label">WhatsApp number</label>
                 <input class="input" type="tel" name="customer_whatsapp" placeholder="e.g. +94 77 123 4567" required>
                 <p class="help">We’ll message your curated basket link here.</p>
@@ -185,12 +72,12 @@
             <hr style="border-color: var(--line);">
 
             <div class="columns is-vcentered">
-              <div class="column is-7">
+              <div class="column is-12">
                 <p class="fineprint">
                   MVP note: After we build your first basket, you can request changes anytime (swap items, sizes, add/remove products).
                 </p>
               </div>
-              <div class="column is-5 has-text-right">
+              <div class="column is-12 has-text-right">
                 <button type="submit" class="button is-medium btn-gradient is-fullwidth">
                   Submit &amp; Get My Basket
                 </button>
@@ -215,22 +102,22 @@
       </div>
 
       <div class="columns is-multiline is-variable is-2">
-        <div class="column is-4">
+        <div class="column is-12">
           <label class="label">Brand</label>
           <input class="input" type="text" name="products[IDX][brand]" placeholder="e.g. Beauty of Joseon" required>
         </div>
 
-        <div class="column is-5">
+        <div class="column is-12">
           <label class="label">Product name</label>
           <input class="input" type="text" name="products[IDX][name]" placeholder="e.g. Relief Sun: Rice + Probiotics" required>
         </div>
 
-        <div class="column is-3">
+        <div class="column is-12">
           <label class="label">Size</label>
           <input class="input" type="text" name="products[IDX][size]" placeholder="e.g. 50ml / 200ml" required>
         </div>
 
-        <div class="column is-8">
+        <div class="column is-12">
           <label class="label">Image (optional)</label>
           <div class="file has-name is-fullwidth">
             <label class="file-label">
@@ -245,7 +132,7 @@
           <p class="help">Screenshot from your gallery is perfect.</p>
         </div>
 
-        <div class="column is-4">
+        <div class="column is-12">
           <label class="label">Preview</label>
           <div class="thumb">Optional</div>
         </div>
