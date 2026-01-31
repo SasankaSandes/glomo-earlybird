@@ -24,7 +24,7 @@
   }
 
   .glomo-card{
-    background: var(--panel);
+    background: #fef3ff;
     border: 1px solid var(--line);
     border-radius: 18px;
     box-shadow: 0 20px 60px rgba(0,0,0,.08);
@@ -34,40 +34,16 @@
   .glomo-card__top{
     padding: 22px 22px 14px;
     border-bottom: 1px solid var(--line);
-    background:
-      radial-gradient(1200px 200px at 10% 0%, rgba(0,196,244,.10), transparent 60%),
-      radial-gradient(1200px 200px at 60% 0%, rgba(255,79,216,.10), transparent 55%),
-      radial-gradient(1200px 240px at 95% 0%, rgba(245,199,106,.12), transparent 55%),
-      #ffffff;
+    background:#ffffff;
   }
 
   .brand-row { 
-    display:flex; 
-    align-items:center; 
+    display:block; 
     gap:12px; 
   }
 
-  .brand-mark{
-    width: 40px; 
-    height: 40px; 
-    border-radius: 12px;
-    border: 1px solid var(--line);
-    background: linear-gradient(
-      135deg, 
-      rgba(0,196,244,.18), 
-      rgba(255,79,216,.16), 
-      rgba(245,199,106,.18)
-    );
-    display:grid; 
-    place-items:center;
-    overflow:hidden;
-  }
-
-  .brand-mark img{
-    width:100%; 
-    height:100%; 
-    object-fit:cover; 
-    display:block;
+  .logo{
+    height:40px;
   }
 
   .glomo-card__body{ 
@@ -106,7 +82,7 @@
   .btn-gradient{
     border: 0;
     color: #0b0b0c !important;
-    background: linear-gradient(90deg, var(--c1), var(--c2), var(--c3));
+    background: linear-gradient(90deg, #62e0ff, #ffb7ef, #ffeac1);
     border-radius: 14px;
     font-weight: 800;
     letter-spacing: .2px;

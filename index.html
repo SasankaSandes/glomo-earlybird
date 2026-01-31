@@ -12,19 +12,18 @@
 
 <body>
   <section class="section glomo-wrap">
-    <div class="container" style="max-width: 920px;">
+    <div class="container">
       <div class="glomo-card">
         <div class="glomo-card__top">
           <div class="brand-row">
-            <div class="brand-mark" title="Glomo">
               <!-- Replace src with your hosted logo path (example: /assets/glomo-square-logo.png) -->
-              <img src="glomo-square-logo.png" alt="Glomo logo">
-            </div>
+              <img class="logo mb-2" src="glomo-logo.png" alt="Glomo logo">
             <div>
-              <h1 class="title is-4 mb-1" style="color:var(--text);">Earlybird Curated Basket</h1>
-              <p class="subtitle is-6 mb-0">
-                Tell us what you already use. We’ll curate a basket you can order &amp; reorder anytime.
-              </p>
+              <h1 class="title is-6 mb-3" >Glomo Personalised Basket</h1>
+              <p class="subtitle is-7 mb-2">
+                Tell us all your favourites products. We’ll create a personalised basket just for you.<br><br>
+                You can order products from your basket as you like with a simple WhatsApp message.<br><br>
+                No more browsing multiple websites filling adressess and card details.
             </div>
           </div>
         </div>
@@ -32,7 +31,7 @@
         <div class="glomo-card__body">
           <form id="earlybirdForm" action="#" method="post" enctype="multipart/form-data">
             <!-- Customer details -->
-            <div class="columns is-multiline">
+            <div class="columns is-multiline mt-1">
               <div class="column is-12">
                 <label class="label">Full name</label>
                 <input class="input" type="text" name="customer_name" placeholder="Your name" required>
@@ -44,12 +43,11 @@
               </div>
             </div>
 
-            <hr style="border-color: var(--line);">
 
             <!-- Products -->
             <div class="is-flex is-justify-content-space-between is-align-items-center mb-3">
               <div>
-                <h2 class="title is-5 mb-1" style="color:var(--text);">Add your favourite products</h2>
+                <h2 class="title is-6 mb-1 mt-5" style="color:var(--text);">Add your favourite products</h2>
                 <p class="fineprint">Brand + Name + Size (Images optional). Add as many as you want.</p>
               </div>
             </div>
@@ -115,6 +113,7 @@
           <input class="input" type="text" name="products[IDX][size]" placeholder="e.g. 50ml / 200ml" required>
         </div>
 
+        <!--
         <div class="column is-12">
           <label class="label">Image (optional)</label>
           <div class="file has-name is-fullwidth">
@@ -134,6 +133,7 @@
           <label class="label">Preview</label>
           <div class="thumb">Optional</div>
         </div>
+        -->
       </div>
     </div>
   </template>
@@ -303,6 +303,7 @@
         reindexRows();
       });
 
+      /*
       // Image preview handler
       const imgInput = block.querySelector(".img-input");
       const fileNameEl = block.querySelector(".file-name");
@@ -320,6 +321,7 @@
         const url = URL.createObjectURL(file);
         thumb.innerHTML = `<img src="${url}" alt="Product image preview">`;
       });
+      */
 
       productsWrap.appendChild(node);
 
