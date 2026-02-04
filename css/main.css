@@ -51,6 +51,66 @@ body {
     padding: 20px 22px 22px;
 }
 
+/* Steps */
+.step-screen,
+.form-step {
+    display: none;
+}
+
+.step-screen.is-active,
+.form-step.is-active {
+    display: block;
+}
+
+.step-header {
+    margin-bottom: 16px;
+}
+
+.step-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(0, 196, 244, .12);
+    color: rgba(0, 0, 0, .75);
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+/* Splash + intro */
+.splash,
+.intro {
+    text-align: center;
+}
+
+.splash__logo {
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #62e0ff, #ffb7ef, #ffeac1);
+    display: grid;
+    place-items: center;
+    margin: 0 auto 18px;
+}
+
+.splash__logo .logo {
+    height: 32px;
+}
+
+.intro__points {
+    display: grid;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.intro__point {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 13px;
+    background: #ffffff;
+}
+
 .help,
 .subtitle,
 .label {
@@ -151,6 +211,38 @@ body {
 .fineprint {
     font-size: 12px;
     color: rgba(0, 0, 0, .55);
+}
+
+.review-block {
+    border: 1px solid var(--line);
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 16px;
+    display: grid;
+    gap: 14px;
+}
+
+.review-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: rgba(0, 0, 0, .45);
+    margin-bottom: 6px;
+}
+
+.review-value,
+.review-list {
+    font-size: 14px;
+    color: rgba(0, 0, 0, .75);
+}
+
+.review-list ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.review-list li {
+    margin-bottom: 6px;
 }
 
 /* -------------------------------------------

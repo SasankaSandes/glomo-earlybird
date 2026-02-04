@@ -34,50 +34,133 @@
         </div>
 
         <div class="glomo-card__body">
-          <form id="earlybirdForm" action="#" method="post" enctype="multipart/form-data">
-            <!-- Customer details -->
-            <div class="columns is-multiline mt-1">
-              <div class="column is-12">
-                <label class="label">Full name</label>
-                <input class="input" type="text" name="customer_name" placeholder="Your name" required>
+          <div class="step-screen is-active" data-step="splash">
+            <div class="splash">
+              <div class="splash__logo">
+                <img class="logo" src="glomo-logo.png" alt="Glomo logo">
               </div>
-              <div class="column is-12">
-                <label class="label">WhatsApp number</label>
-                <input class="input" type="tel" name="customer_whatsapp" placeholder="e.g. +94 77 123 4567" required>
-                <p class="help">We’ll message your curated basket link here.</p>
+              <h2 class="title is-4">Glomo.lk</h2>
+              <p class="subtitle is-6 mb-5">
+                Your personal care basket, curated for you.
+              </p>
+              <button type="button" class="button is-medium btn-gradient is-fullwidth" data-next="intro">
+                Start
+              </button>
+            </div>
+          </div>
+
+          <div class="step-screen" data-step="intro">
+            <div class="intro">
+              <h2 class="title is-5 mb-2">Change your personal care game</h2>
+              <p class="subtitle is-6 mb-4">
+                Glomo.lk combines the best of Shopify product catalogs with the ease of WhatsApp ordering. Tell us what
+                you love, and we build a tailored basket across brands—no endless browsing, no checkout friction, just a
+                chat that gets you what you want.
+              </p>
+              <div class="intro__points">
+                <div class="intro__point">Curated basket in minutes</div>
+                <div class="intro__point">Order &amp; edit anytime on WhatsApp</div>
+                <div class="intro__point">Save your preferences for next time</div>
+              </div>
+              <button type="button" class="button is-medium btn-gradient is-fullwidth mt-4" data-next="details">
+                Build my basket
+              </button>
+              <button type="button" class="button btn-ghost is-fullwidth mt-2" data-prev="splash">
+                Back
+              </button>
+            </div>
+          </div>
+
+          <form id="earlybirdForm" action="#" method="post" enctype="multipart/form-data">
+            <div class="form-step" data-step="details">
+              <div class="step-header">
+                <span class="step-tag">Step 1 of 3</span>
+                <h2 class="title is-6 mb-1" style="color:var(--text);">Your details</h2>
+                <p class="fineprint">We only use this to send your basket link.</p>
+              </div>
+
+              <div class="columns is-multiline mt-2">
+                <div class="column is-12">
+                  <label class="label">Full name</label>
+                  <input class="input" type="text" name="customer_name" placeholder="Your name" required>
+                </div>
+                <div class="column is-12">
+                  <label class="label">WhatsApp number</label>
+                  <input class="input" type="tel" name="customer_whatsapp" placeholder="e.g. +94 77 123 4567" required>
+                  <p class="help">We’ll message your curated basket link here.</p>
+                </div>
+              </div>
+
+              <div class="columns is-vcentered mt-4">
+                <div class="column is-12 has-text-right">
+                  <button type="button" class="button is-medium btn-gradient is-fullwidth" data-next="products">
+                    Continue
+                  </button>
+                </div>
               </div>
             </div>
 
-
-            <!-- Products -->
-            <div class="is-flex is-justify-content-space-between is-align-items-center mb-3">
-              <div>
-                <h2 class="title is-6 mb-1 mt-5" style="color:var(--text);">Add your favourite products</h2>
+            <div class="form-step" data-step="products">
+              <div class="step-header">
+                <span class="step-tag">Step 2 of 3</span>
+                <h2 class="title is-6 mb-1" style="color:var(--text);">Add your favourite products</h2>
                 <p class="fineprint">Product brand, product name and size. Add as many as you want.</p>
               </div>
-            </div>
 
-            <div id="productsWrap" class="block" style="display:flex; flex-direction:column; gap:12px;">
-              <!-- Product rows injected here -->
-            </div>
-            <button type="button" id="addProductBtn" class="button btn-ghost">
-              + Add another product
-            </button>
-
-            <div class="columns is-vcentered mt-5">
-              <div class="column is-12">
-                <p class="fineprint">
-                  After we create your personalised basket, you can request changes anytime (add/remove products and
-                  change sizes).
-                </p>
+              <div id="productsWrap" class="block" style="display:flex; flex-direction:column; gap:12px;">
+                <!-- Product rows injected here -->
               </div>
-              <div class="column is-12 has-text-right">
-                <button type="submit" class="button is-medium btn-gradient is-fullwidth">
-                  Create my personalised basket
-                </button>
+              <button type="button" id="addProductBtn" class="button btn-ghost">
+                + Add another product
+              </button>
+
+              <div class="columns is-vcentered mt-4">
+                <div class="column is-12">
+                  <p class="fineprint">
+                    After we create your personalised basket, you can request changes anytime (add/remove products and
+                    change sizes).
+                  </p>
+                </div>
+                <div class="column is-12 has-text-right">
+                  <button type="button" class="button btn-ghost is-fullwidth" data-prev="details">
+                    Back
+                  </button>
+                  <button type="button" class="button is-medium btn-gradient is-fullwidth mt-2" data-next="review">
+                    Review basket
+                  </button>
+                </div>
               </div>
             </div>
 
+            <div class="form-step" data-step="review">
+              <div class="step-header">
+                <span class="step-tag">Step 3 of 3</span>
+                <h2 class="title is-6 mb-1" style="color:var(--text);">Review &amp; send</h2>
+                <p class="fineprint">Check your details before we build your basket.</p>
+              </div>
+
+              <div class="review-block">
+                <div class="review-section">
+                  <div class="review-label">Customer</div>
+                  <div id="reviewCustomer" class="review-value">—</div>
+                </div>
+                <div class="review-section">
+                  <div class="review-label">Products</div>
+                  <div id="reviewProducts" class="review-list">—</div>
+                </div>
+              </div>
+
+              <div class="columns is-vcentered mt-4">
+                <div class="column is-12 has-text-right">
+                  <button type="button" class="button btn-ghost is-fullwidth" data-prev="products">
+                    Back
+                  </button>
+                  <button type="submit" class="button is-medium btn-gradient is-fullwidth mt-2">
+                    Create my personalised basket
+                  </button>
+                </div>
+              </div>
+            </div>
           </form>
         </div>
       </div>
@@ -148,6 +231,72 @@
     const productsWrap = document.getElementById("productsWrap");
     const addBtn = document.getElementById("addProductBtn");
     const tpl = document.getElementById("productRowTpl");
+    const formEl = document.getElementById("earlybirdForm");
+    const stepEls = document.querySelectorAll(".step-screen, .form-step");
+    const reviewCustomer = document.getElementById("reviewCustomer");
+    const reviewProducts = document.getElementById("reviewProducts");
+
+    function showStep(stepId) {
+      stepEls.forEach((el) => {
+        el.classList.toggle("is-active", el.dataset.step === stepId);
+      });
+
+      if (stepId === "review") {
+        renderReview();
+      }
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function validateDetailsStep() {
+      const fields = document.querySelectorAll('[data-step="details"] input[required]');
+      return [...fields].every((field) => field.reportValidity());
+    }
+
+    function renderReview() {
+      const name = formEl.elements["customer_name"]?.value?.trim() || "";
+      const whatsapp = formEl.elements["customer_whatsapp"]?.value?.trim() || "";
+      reviewCustomer.textContent = name || whatsapp ? `${name}${name && whatsapp ? " · " : ""}${whatsapp}` : "—";
+
+      reviewProducts.innerHTML = "";
+      const list = document.createElement("ul");
+      let hasItems = false;
+
+      [...productsWrap.children].forEach((block) => {
+        const brand = block.querySelector('[name*="[brand]"]')?.value?.trim();
+        const product = block.querySelector('[name*="[name]"]')?.value?.trim();
+        const size = block.querySelector('[name*="[size]"]')?.value?.trim();
+
+        if (!brand && !product && !size) return;
+        hasItems = true;
+
+        const li = document.createElement("li");
+        li.textContent = [brand, product, size].filter(Boolean).join(" · ");
+        list.appendChild(li);
+      });
+
+      if (!hasItems) {
+        reviewProducts.textContent = "No products added yet.";
+        return;
+      }
+
+      reviewProducts.appendChild(list);
+    }
+
+    document.querySelectorAll("[data-next]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const next = btn.getAttribute("data-next");
+        if (next === "products" && !validateDetailsStep()) return;
+        showStep(next);
+      });
+    });
+
+    document.querySelectorAll("[data-prev]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const prev = btn.getAttribute("data-prev");
+        showStep(prev);
+      });
+    });
 
     // --- Autocomplete data (brands + products) ---
     // Note: This will only work when served via http(s) (e.g., Live Server / local server), not file://
@@ -346,7 +495,7 @@
     }
 
     // Optional: handle submit (for MVP you can POST to your backend / form service)
-    document.getElementById("earlybirdForm").addEventListener("submit", (e) => {
+    formEl.addEventListener("submit", (e) => {
       e.preventDefault();
 
       // Quick MVP: show a nice confirmation
@@ -357,10 +506,12 @@
       // reset UI to 1 row
       productsWrap.innerHTML = "";
       addProductRow();
+      showStep("splash");
     });
 
     // Load JSON once at startup
     loadBrandProducts();
+    showStep("splash");
   </script>
 </body>
 
