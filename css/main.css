@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 :root {
     /* Light base */
     --bg: #f7f7f8;
@@ -16,24 +20,27 @@ html,
 body {
     background: var(--bg);
     color: var(--text);
+    font-family: "Sora", system-ui, -apple-system, Segoe UI, sans-serif;
+    line-height: 1.5;
 }
 
 .glomo-wrap {
     min-height: 100vh;
     display: flex;
     align-items: center;
+    background: radial-gradient(1200px 400px at 50% -120px, #ffffff 0%, #f7f7f8 60%);
 }
 
 .glomo-card {
-    background: #fef3ff;
+    background: #ffffff;
     border: 1px solid var(--line);
-    border-radius: 18px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, .08);
+    border-radius: 22px;
+    box-shadow: 0 16px 50px rgba(0, 0, 0, .08);
     overflow: hidden;
 }
 
 .glomo-card__top {
-    padding: 22px 22px 14px;
+    padding: 26px 22px 20px;
     border-bottom: 1px solid var(--line);
     background: #ffffff;
 }
@@ -48,13 +55,22 @@ body {
 }
 
 .glomo-card__body {
-    padding: 20px 22px 22px;
+    padding: 22px 22px 26px;
 }
 
 .help,
 .subtitle,
 .label {
     color: var(--muted) !important;
+}
+
+.title {
+    letter-spacing: -0.2px;
+}
+
+.lede {
+    max-width: 40ch;
+    line-height: 1.6;
 }
 
 /* Inputs */
@@ -153,6 +169,34 @@ body {
     color: rgba(0, 0, 0, .55);
 }
 
+.landing-step {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.landing-points {
+    padding: 12px 14px;
+    border: 1px solid rgba(0, 0, 0, .08);
+    border-radius: 14px;
+    background: #fafafa;
+}
+
+.landing-steps {
+    display: grid;
+    gap: 8px;
+}
+
+.step-chip {
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, .04);
+    border: 1px solid rgba(0, 0, 0, .06);
+    font-size: 12px;
+    font-weight: 600;
+    color: #1a1a1d;
+}
+
 /* -------------------------------------------
    Mobile-first immersive layout adjustments
 -------------------------------------------- */
@@ -186,11 +230,11 @@ body {
     }
 
     .glomo-card__top {
-        padding: 18px 16px 12px;
+        padding: 22px 16px 16px;
     }
 
     .glomo-card__body {
-        padding: 16px;
+        padding: 16px 16px 22px;
     }
 }
 
