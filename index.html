@@ -1,18 +1,16 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Glomo – Personalised beauty basket</title>
 
-  <!-- Bulma -->
   <link rel="stylesheet" href="css/bulma.min.css">
   <link rel="stylesheet" href="css/main.css">
+
   <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
   <link rel="icon" type="image/png" href="favicon.png" sizes="32x32">
   <link rel="icon" type="image/png" href="favicon.png" sizes="16x16">
-
 </head>
 
 <body>
@@ -21,347 +19,61 @@
       <div class="glomo-card">
         <div class="glomo-card__top">
           <div class="brand-row">
-            <!-- Replace src with your hosted logo path (example: /assets/glomo-square-logo.png) -->
             <img class="logo mb-2" src="glomo-logo.png" alt="Glomo logo">
-            <div>
-              <h1 class="title is-6 mb-3">Personalised beauty basket</h1>
-              <p class="subtitle is-7 mb-2">
-                Tell us all your favourites products. We’ll create a personalised basket just for you.<br><br>
-                You can order products from your basket as you like with a simple WhatsApp message.<br><br>
-                No more browsing multiple websites filling adressess and card details.
+
+            <div class="landing-step">
+              <h1 class="title is-5 mb-2">Your personal care routine—without the browsing.</h1>
+
+              <p class="subtitle is-6 mb-3">
+                Glomo turns your favourites into a personalised basket.<br>
+                Reorder anytime with just a WhatsApp message.
+              </p>
+
+              <div class="landing-bullets mb-4">
+                <p class="subtitle is-7 mb-1">✅ No more searching multiple websites</p>
+                <p class="subtitle is-7 mb-1">✅ No more filling addresses &amp; card details again</p>
+                <p class="subtitle is-7 mb-1">✅ No more running out unexpectedly</p>
+              </div>
+
+              <div class="landing-how mb-4">
+                <p class="subtitle is-7 mb-1"><strong>How it works</strong></p>
+                <p class="subtitle is-7 mb-1">1) Tell us what you use now</p>
+                <p class="subtitle is-7 mb-1">2) We create your personalised basket</p>
+                <p class="subtitle is-7 mb-1">3) Reorder anytime with one message</p>
+              </div>
+
+              <div class="buttons is-flex is-flex-direction-column" style="gap:10px;">
+                <a id="startFlow" class="button is-medium btn-gradient is-fullwidth" href="your-details.html">
+                  Create My Personal Basket
+                </a>
+                <p class="fineprint has-text-centered">Takes less than 2 minutes.</p>
+              </div>
+
+              <p class="fineprint mt-4">
+                Earlybird access: You’re helping us build Glomo around real routines. Your basket stays editable anytime.
+              </p>
             </div>
+
           </div>
         </div>
 
         <div class="glomo-card__body">
-          <form id="earlybirdForm" action="#" method="post" enctype="multipart/form-data">
-            <!-- Customer details -->
-            <div class="columns is-multiline mt-1">
-              <div class="column is-12">
-                <label class="label">Full name</label>
-                <input class="input" type="text" name="customer_name" placeholder="Your name" required>
-              </div>
-              <div class="column is-12">
-                <label class="label">WhatsApp number</label>
-                <input class="input" type="tel" name="customer_whatsapp" placeholder="e.g. +94 77 123 4567" required>
-                <p class="help">We’ll message your curated basket link here.</p>
-              </div>
-            </div>
-
-
-            <!-- Products -->
-            <div class="is-flex is-justify-content-space-between is-align-items-center mb-3">
-              <div>
-                <h2 class="title is-6 mb-1 mt-5" style="color:var(--text);">Add your favourite products</h2>
-                <p class="fineprint">Product brand, product name and size. Add as many as you want.</p>
-              </div>
-            </div>
-
-            <div id="productsWrap" class="block" style="display:flex; flex-direction:column; gap:12px;">
-              <!-- Product rows injected here -->
-            </div>
-            <button type="button" id="addProductBtn" class="button btn-ghost">
-              + Add another product
-            </button>
-
-            <div class="columns is-vcentered mt-5">
-              <div class="column is-12">
-                <p class="fineprint">
-                  After we create your personalised basket, you can request changes anytime (add/remove products and
-                  change sizes).
-                </p>
-              </div>
-              <div class="column is-12 has-text-right">
-                <button type="submit" class="button is-medium btn-gradient is-fullwidth">
-                  Create my personalised basket
-                </button>
-              </div>
-            </div>
-
-          </form>
+          <a href="https://glomo.lk" target="_blank" class="copyright has-text-centered mt-2 fineprint">
+            © Glomo.lk
+          </a>
         </div>
       </div>
-
-      <a href="https://glomo.lk" target="_blank" class="copyright has-text-centered mt-4 fineprint">
-        © Glomo.lk
-      </a>
     </div>
   </section>
 
-  <template id="productRowTpl">
-    <div class="product-block">
-      <div class="product-block__head">
-        <span class="tag is-dark">Product&nbsp;<span class="product-index"></span></span>
-        <button type="button" class="button is-small btn-danger-ghost remove-btn">Remove</button>
-      </div>
-
-      <div class="columns is-multiline is-variable is-2">
-        <div class="column is-12">
-          <label class="label">Brand</label>
-          <div class="ac-wrap">
-            <input class="input brand-input" type="text" name="products[IDX][brand]" placeholder="e.g. Beauty of Joseon"
-              required autocomplete="off">
-            <div class="ac-menu brand-menu" role="listbox" aria-label="Brand suggestions"></div>
-          </div>
-        </div>
-
-        <div class="column is-12">
-          <label class="label">Product name</label>
-          <div class="ac-wrap">
-            <input class="input product-input" type="text" name="products[IDX][name]"
-              placeholder="e.g. Relief Sun: Rice + Probiotics" required autocomplete="off">
-            <div class="ac-menu product-menu" role="listbox" aria-label="Product suggestions"></div>
-          </div>
-        </div>
-
-        <div class="column is-12">
-          <label class="label">Size</label>
-          <input class="input" type="text" name="products[IDX][size]" placeholder="e.g. 50ml / 200ml" required>
-        </div>
-
-        <!--
-        <div class="column is-12">
-          <label class="label">Image (optional)</label>
-          <div class="file has-name is-fullwidth">
-            <label class="file-label">
-              <input class="file-input img-input" type="file" name="products[IDX][image]" accept="image/*">
-              <span class="file-cta btn-ghost">
-                <span class="file-icon">📷</span>
-                <span class="file-label">Choose image</span>
-              </span>
-              <span class="file-name">No file selected</span>
-            </label>
-          </div>
-          <p class="help">Screenshot from your gallery is perfect.</p>
-        </div>
-
-        <div class="column is-12">
-          <label class="label">Preview</label>
-          <div class="thumb">Optional</div>
-        </div>
-        -->
-      </div>
-    </div>
-  </template>
-
   <script>
-    const productsWrap = document.getElementById("productsWrap");
-    const addBtn = document.getElementById("addProductBtn");
-    const tpl = document.getElementById("productRowTpl");
+    // Reset flow if coming fresh to landing
+    sessionStorage.removeItem("glomo_earlybird");
 
-    // --- Autocomplete data (brands + products) ---
-    // Note: This will only work when served via http(s) (e.g., Live Server / local server), not file://
-    let BRAND_PRODUCTS = {};
-    let BRAND_LIST = [];
-    const BRAND_LOOKUP = new Map(); // lowercased brand -> canonical brand
-    let dataLoaded = false;
-
-    function canonicalBrand(input) {
-      const key = (input || "").trim().toLowerCase();
-      return BRAND_LOOKUP.get(key) || null;
-    }
-
-    function uniqSorted(arr) {
-      return [...new Set(arr)].sort((a, b) => a.localeCompare(b));
-    }
-
-    async function loadBrandProducts() {
-      try {
-        const res = await fetch("brands-and-products.json", { cache: "no-store" });
-        if (!res.ok) throw new Error("Failed to load brands-and-products.json");
-        BRAND_PRODUCTS = await res.json();
-        BRAND_LIST = Object.keys(BRAND_PRODUCTS).sort((a, b) => a.localeCompare(b));
-        BRAND_LOOKUP.clear();
-        BRAND_LIST.forEach(b => BRAND_LOOKUP.set(b.toLowerCase(), b));
-        dataLoaded = true;
-
-        // Attach autocomplete to any existing rows
-        [...productsWrap.children].forEach(block => setupAutocompleteForRow(block));
-      } catch (err) {
-        console.warn(err);
-        dataLoaded = false; // form still works without suggestions
-      }
-    }
-
-    // --- Dropdown helpers ---
-    function openMenu(menuEl) { menuEl?.classList.add("is-active"); }
-    function closeMenu(menuEl) { menuEl?.classList.remove("is-active"); }
-
-    function renderMenu(menuEl, items, onPick) {
-      if (!menuEl) return;
-      menuEl.innerHTML = "";
-
-      if (!items || items.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "ac-empty";
-        empty.textContent = "No suggestions — you can type your own.";
-        menuEl.appendChild(empty);
-        return;
-      }
-
-      items.slice(0, 30).forEach((label) => {
-        const div = document.createElement("div");
-        div.className = "ac-item";
-        div.setAttribute("role", "option");
-        div.textContent = label;
-
-        // mousedown fires before blur, so selection works on mobile too
-        div.addEventListener("mousedown", (e) => {
-          e.preventDefault();
-          onPick(label);
-        });
-
-        menuEl.appendChild(div);
-      });
-    }
-
-    function filterList(list, query) {
-      const q = (query || "").trim().toLowerCase();
-      if (!q) return list.slice(0, 30);
-      return list.filter(x => x.toLowerCase().includes(q)).slice(0, 30);
-    }
-
-    function productsForBrand(brandValue) {
-      const b = canonicalBrand(brandValue);
-      if (!b) return [];
-      const raw = (BRAND_PRODUCTS[b] || []).map(p => p.product_name).filter(Boolean);
-      return uniqSorted(raw);
-    }
-
-    function setupAutocompleteForRow(block) {
-      if (!dataLoaded || !block) return;
-
-      const brandInput = block.querySelector(".brand-input");
-      const productInput = block.querySelector(".product-input");
-      const brandMenu = block.querySelector(".brand-menu");
-      const productMenu = block.querySelector(".product-menu");
-
-      if (!brandInput || !productInput || !brandMenu || !productMenu) return;
-
-      // Prevent duplicate bindings if reindexRows() calls this again
-      if (block.dataset.acBound === "1") return;
-      block.dataset.acBound = "1";
-
-      function refreshBrandMenu() {
-        renderMenu(brandMenu, filterList(BRAND_LIST, brandInput.value), (picked) => {
-          brandInput.value = picked;
-          closeMenu(brandMenu);
-
-          // after selecting brand, refresh product list and nudge user to product field
-          refreshProductMenu(true);
-          productInput.focus();
-        });
-      }
-
-      function refreshProductMenu(openIfNeeded = false) {
-        const list = productsForBrand(brandInput.value);
-        renderMenu(productMenu, filterList(list, productInput.value), (picked) => {
-          productInput.value = picked;
-          closeMenu(productMenu);
-        });
-
-        if (openIfNeeded) openMenu(productMenu);
-      }
-
-      // BRAND interactions
-      brandInput.addEventListener("focus", () => { refreshBrandMenu(); openMenu(brandMenu); });
-      brandInput.addEventListener("input", () => { refreshBrandMenu(); openMenu(brandMenu); });
-      brandInput.addEventListener("change", () => { refreshProductMenu(false); });
-
-      // PRODUCT interactions
-      productInput.addEventListener("focus", () => { refreshProductMenu(); openMenu(productMenu); });
-      productInput.addEventListener("input", () => { refreshProductMenu(); openMenu(productMenu); });
-
-      // Close on blur (small delay allows tap selection)
-      brandInput.addEventListener("blur", () => setTimeout(() => closeMenu(brandMenu), 120));
-      productInput.addEventListener("blur", () => setTimeout(() => closeMenu(productMenu), 120));
-    }
-
-    // One global outside-click handler (doesn't get duplicated per row)
-    document.addEventListener("mousedown", (e) => {
-      document.querySelectorAll(".ac-menu.is-active").forEach(menu => {
-        const wrap = menu.closest(".ac-wrap");
-        if (wrap && !wrap.contains(e.target)) closeMenu(menu);
-      });
+    // Ensure next page enters from the right (forward)
+    document.getElementById("startFlow")?.addEventListener("click", () => {
+      sessionStorage.setItem("glomo_nav_dir", "forward");
     });
-
-    // Add 1 default row
-    addProductRow();
-
-    addBtn.addEventListener("click", () => addProductRow());
-
-    function addProductRow() {
-      const idx = productsWrap.children.length;
-      const node = tpl.content.cloneNode(true);
-
-      // Set index label + input names
-      const block = node.querySelector(".product-block");
-      block.querySelector(".product-index").textContent = (idx + 1);
-
-      // Replace IDX in all name attributes
-      block.querySelectorAll("[name]").forEach(el => {
-        el.name = el.name.replaceAll("IDX", idx);
-      });
-
-      // Remove handler
-      block.querySelector(".remove-btn").addEventListener("click", () => {
-        block.remove();
-        reindexRows();
-      });
-
-      /*
-      // Image preview handler
-      const imgInput = block.querySelector(".img-input");
-      const fileNameEl = block.querySelector(".file-name");
-      const thumb = block.querySelector(".thumb");
-
-      imgInput.addEventListener("change", (e) => {
-        const file = e.target.files && e.target.files[0];
-        fileNameEl.textContent = file ? file.name : "No file selected";
-
-        if (!file) {
-          thumb.innerHTML = "Optional";
-          return;
-        }
-
-        const url = URL.createObjectURL(file);
-        thumb.innerHTML = `<img src="${url}" alt="Product image preview">`;
-      });
-      */
-
-      productsWrap.appendChild(node);
-
-      // Attach autocomplete for this row (if data already loaded)
-      setupAutocompleteForRow(productsWrap.lastElementChild);
-    }
-
-    function reindexRows() {
-      [...productsWrap.children].forEach((block, newIdx) => {
-        block.querySelector(".product-index").textContent = (newIdx + 1);
-        block.querySelectorAll("[name]").forEach(el => {
-          // Convert products[old][x] -> products[new][x]
-          el.name = el.name.replace(/products\\[\\d+\\]/, `products[${newIdx}]`);
-        });
-      });
-    }
-
-    // Optional: handle submit (for MVP you can POST to your backend / form service)
-    document.getElementById("earlybirdForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      // Quick MVP: show a nice confirmation
-      // Replace this with: fetch('/api/earlybird', {method:'POST', body:new FormData(e.target)})
-      alert("Thanks! We received your favourites. We’ll WhatsApp you your curated basket link soon.");
-      e.target.reset();
-
-      // reset UI to 1 row
-      productsWrap.innerHTML = "";
-      addProductRow();
-    });
-
-    // Load JSON once at startup
-    loadBrandProducts();
   </script>
 </body>
-
 </html>

@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Glomo – Step 2</title>
+
+  <link rel="stylesheet" href="css/bulma.min.css">
+  <link rel="stylesheet" href="css/main.css">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
+  <link rel="icon" type="image/png" href="favicon.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="favicon.png" sizes="16x16">
+</head>
+
+<body class="page">
+  <section class="section glomo-wrap">
+    <div class="container">
+      <div class="glomo-card">
+
+        <!-- App bar -->
+        <div class="appbar">
+          <div class="appbar__left">
+            <a class="appbar__back" href="your-details.html" data-nav="back" aria-label="Back">←</a>
+          </div>
+          <div class="appbar__center">
+            <img src="glomo-logo.png" class="appbar__logo" alt="Glomo">
+          </div>
+          <div class="appbar__right"></div>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="appbar-progress">
+          <div class="appbar-progress__bar" data-progress="100"></div>
+        </div>
+
+        <div class="glomo-card__top">
+          <div>
+            <div class="step-indicator">Step 2 of 2</div>
+            <h1 class="title is-6 mb-2">Your favourites</h1>
+            <p class="subtitle is-7 mb-2">
+              Add your favourite products. We’ll create a personalised basket just for you.
+            </p>
+            <p class="fineprint">
+              Ordering later will feel as easy as sending a WhatsApp message.
+            </p>
+          </div>
+        </div>
+
+        <div class="glomo-card__body">
+          <form id="earlybirdForm" action="#" method="post" enctype="multipart/form-data">
+            <!-- Hidden fields filled from sessionStorage -->
+            <input type="hidden" name="customer_name" id="hiddenName">
+            <input type="hidden" name="customer_whatsapp" id="hiddenWhatsapp">
+
+            <div class="is-flex is-justify-content-space-between is-align-items-center mb-3">
+              <div>
+                <h2 class="title is-6 mb-1" style="color:var(--text);">Add your favourite products</h2>
+                <p class="fineprint">Product brand, product name and size. Add as many as you want.</p>
+              </div>
+            </div>
+
+            <div id="productsWrap" class="block" style="display:flex; flex-direction:column; gap:12px;"></div>
+
+            <button type="button" id="addProductBtn" class="button btn-ghost">
+              + Add another product
+            </button>
+
+            <div class="columns is-vcentered mt-5">
+              <div class="column is-12">
+                <p class="fineprint">
+                  After we create your personalised basket, you can request changes anytime (add/remove products and change sizes).
+                </p>
+              </div>
+
+              <div class="column is-12">
+                <button type="submit" class="button is-medium btn-gradient is-fullwidth">
+                  Create my personalised basket
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <a href="https://glomo.lk" target="_blank" class="copyright has-text-centered mt-4 fineprint">
+        © Glomo.lk
+      </a>
+    </div>
+  </section>
+
+  <template id="productRowTpl">
+    <div class="product-block">
+      <div class="product-block__head">
+        <span class="tag is-dark">Product&nbsp;<span class="product-index"></span></span>
+        <button type="button" class="button is-small btn-danger-ghost remove-btn">Remove</button>
+      </div>
+
+      <div class="columns is-multiline is-variable is-2">
+        <div class="column is-12">
+          <label class="label">Brand</label>
+          <div class="ac-wrap">
+            <input class="input brand-input" type="text" name="products[IDX][brand]" placeholder="e.g. Beauty of Joseon" required autocomplete="off">
+            <div class="ac-menu brand-menu" role="listbox" aria-label="Brand suggestions"></div>
+          </div>
+        </div>
+
+        <div class="column is-12">
+          <label class="label">Product name</label>
+          <div class="ac-wrap">
+            <input class="input product-input" type="text" name="products[IDX][name]" placeholder="e.g. Relief Sun: Rice + Probiotics" required autocomplete="off">
+            <div class="ac-menu product-menu" role="listbox" aria-label="Product suggestions"></div>
+          </div>
+        </div>
+
+        <div class="column is-12">
+          <label class="label">Size</label>
+          <input class="input" type="text" name="products[IDX][size]" placeholder="e.g. 50ml / 200ml" required>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    // ----- Progress bar animate -----
+    const bar = document.querySelector(".appbar-progress__bar");
+    requestAnimationFrame(() => {
+      if (bar) bar.style.width = (bar.dataset.progress || "0") + "%";
+    });
+
+    // ----- Slide entry direction -----
+    const dir = sessionStorage.getItem("glomo_nav_dir") || "forward";
+    document.body.classList.add(dir === "back" ? "enter-left" : "enter-right");
+
+    // ----- Intercept back link for exit animation -----
+    document.querySelectorAll("a[data-nav]").forEach(a => {
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        const nav = a.dataset.nav;
+        sessionStorage.setItem("glomo_nav_dir", nav);
+
+        document.body.classList.add(nav === "back" ? "exit-left" : "exit-right");
+        setTimeout(() => window.location.href = a.href, 200);
+      });
+    });
+
+    // --- Step data storage ---
+    const KEY = "glomo_earlybird";
+    function readDraft() {
+      try { return JSON.parse(sessionStorage.getItem(KEY) || "{}"); }
+      catch { return {}; }
+    }
+
+    const draft = readDraft();
+    if (!draft.customer_name || !draft.customer_whatsapp) {
+      sessionStorage.setItem("glomo_nav_dir", "back");
+      window.location.href = "your-details.html";
+    }
+
+    document.getElementById("hiddenName").value = draft.customer_name || "";
+    document.getElementById("hiddenWhatsapp").value = draft.customer_whatsapp || "";
+
+    // --- Products + autocomplete ---
+    const productsWrap = document.getElementById("productsWrap");
+    const addBtn = document.getElementById("addProductBtn");
+    const tpl = document.getElementById("productRowTpl");
+
+    let BRAND_PRODUCTS = {};
+    let BRAND_LIST = [];
+    const BRAND_LOOKUP = new Map();
+    let dataLoaded = false;
+
+    function canonicalBrand(input) {
+      const key = (input || "").trim().toLowerCase();
+      return BRAND_LOOKUP.get(key) || null;
+    }
+    function uniqSorted(arr) {
+      return [...new Set(arr)].sort((a, b) => a.localeCompare(b));
+    }
+    async function loadBrandProducts() {
+      try {
+        const res = await fetch("brands-and-products.json", { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to load brands-and-products.json");
+        BRAND_PRODUCTS = await res.json();
+        BRAND_LIST = Object.keys(BRAND_PRODUCTS).sort((a, b) => a.localeCompare(b));
+        BRAND_LOOKUP.clear();
+        BRAND_LIST.forEach(b => BRAND_LOOKUP.set(b.toLowerCase(), b));
+        dataLoaded = true;
+        [...productsWrap.children].forEach(block => setupAutocompleteForRow(block));
+      } catch (err) {
+        console.warn(err);
+        dataLoaded = false;
+      }
+    }
+
+    function openMenu(menuEl) { menuEl?.classList.add("is-active"); }
+    function closeMenu(menuEl) { menuEl?.classList.remove("is-active"); }
+
+    function renderMenu(menuEl, items, onPick) {
+      if (!menuEl) return;
+      menuEl.innerHTML = "";
+      if (!items || items.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "ac-empty";
+        empty.textContent = "No suggestions — you can type your own.";
+        menuEl.appendChild(empty);
+        return;
+      }
+      items.slice(0, 30).forEach((label) => {
+        const div = document.createElement("div");
+        div.className = "ac-item";
+        div.setAttribute("role", "option");
+        div.textContent = label;
+        div.addEventListener("mousedown", (e) => {
+          e.preventDefault();
+          onPick(label);
+        });
+        menuEl.appendChild(div);
+      });
+    }
+
+    function filterList(list, query) {
+      const q = (query || "").trim().toLowerCase();
+      if (!q) return list.slice(0, 30);
+      return list.filter(x => x.toLowerCase().includes(q)).slice(0, 30);
+    }
+
+    function productsForBrand(brandValue) {
+      const b = canonicalBrand(brandValue);
+      if (!b) return [];
+      const raw = (BRAND_PRODUCTS[b] || []).map(p => p.product_name).filter(Boolean);
+      return uniqSorted(raw);
+    }
+
+    function setupAutocompleteForRow(block) {
+      if (!dataLoaded || !block) return;
+
+      const brandInput = block.querySelector(".brand-input");
+      const productInput = block.querySelector(".product-input");
+      const brandMenu = block.querySelector(".brand-menu");
+      const productMenu = block.querySelector(".product-menu");
+      if (!brandInput || !productInput || !brandMenu || !productMenu) return;
+      if (block.dataset.acBound === "1") return;
+      block.dataset.acBound = "1";
+
+      function refreshBrandMenu() {
+        renderMenu(brandMenu, filterList(BRAND_LIST, brandInput.value), (picked) => {
+          brandInput.value = picked;
+          closeMenu(brandMenu);
+          refreshProductMenu(true);
+          productInput.focus();
+        });
+      }
+
+      function refreshProductMenu(openIfNeeded = false) {
+        const list = productsForBrand(brandInput.value);
+        renderMenu(productMenu, filterList(list, productInput.value), (picked) => {
+          productInput.value = picked;
+          closeMenu(productMenu);
+        });
+        if (openIfNeeded) openMenu(productMenu);
+      }
+
+      brandInput.addEventListener("focus", () => { refreshBrandMenu(); openMenu(brandMenu); });
+      brandInput.addEventListener("input", () => { refreshBrandMenu(); openMenu(brandMenu); });
+      brandInput.addEventListener("change", () => { refreshProductMenu(false); });
+
+      productInput.addEventListener("focus", () => { refreshProductMenu(); openMenu(productMenu); });
+      productInput.addEventListener("input", () => { refreshProductMenu(); openMenu(productMenu); });
+
+      brandInput.addEventListener("blur", () => setTimeout(() => closeMenu(brandMenu), 120));
+      productInput.addEventListener("blur", () => setTimeout(() => closeMenu(productMenu), 120));
+    }
+
+    document.addEventListener("mousedown", (e) => {
+      document.querySelectorAll(".ac-menu.is-active").forEach(menu => {
+        const wrap = menu.closest(".ac-wrap");
+        if (wrap && !wrap.contains(e.target)) closeMenu(menu);
+      });
+    });
+
+    addProductRow();
+    addBtn.addEventListener("click", () => addProductRow());
+
+    function addProductRow() {
+      const idx = productsWrap.children.length;
+      const node = tpl.content.cloneNode(true);
+      const block = node.querySelector(".product-block");
+      block.querySelector(".product-index").textContent = (idx + 1);
+
+      block.querySelectorAll("[name]").forEach(el => {
+        el.name = el.name.replaceAll("IDX", idx);
+      });
+
+      block.querySelector(".remove-btn").addEventListener("click", () => {
+        block.remove();
+        reindexRows();
+      });
+
+      productsWrap.appendChild(node);
+      setupAutocompleteForRow(productsWrap.lastElementChild);
+    }
+
+    function reindexRows() {
+      [...productsWrap.children].forEach((block, newIdx) => {
+        block.querySelector(".product-index").textContent = (newIdx + 1);
+        block.querySelectorAll("[name]").forEach(el => {
+          el.name = el.name.replace(/products\\[\\d+\\]/, `products[${newIdx}]`);
+        });
+      });
+    }
+
+    // Submit MVP
+    document.getElementById("earlybirdForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      // forward-ish exit
+      sessionStorage.setItem("glomo_nav_dir", "forward");
+      document.body.classList.add("exit-right");
+
+      setTimeout(() => {
+        alert("Thanks! We received your favourites. We’ll WhatsApp you your curated basket link soon.");
+        sessionStorage.removeItem(KEY);
+        window.location.href = "index.html";
+      }, 200);
+    });
+
+    loadBrandProducts();
+  </script>
+</body>
+</html>

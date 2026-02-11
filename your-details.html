@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Glomo – Step 1</title>
+
+  <link rel="stylesheet" href="css/bulma.min.css">
+  <link rel="stylesheet" href="css/main.css">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
+  <link rel="icon" type="image/png" href="favicon.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="favicon.png" sizes="16x16">
+</head>
+
+<body class="page">
+  <section class="section glomo-wrap">
+    <div class="container">
+      <div class="glomo-card">
+
+        <!-- App bar -->
+        <div class="appbar">
+          <div class="appbar__left">
+            <a class="appbar__back" href="index.html" data-nav="back" aria-label="Back">←</a>
+          </div>
+          <div class="appbar__center">
+            <img src="glomo-logo.png" class="appbar__logo" alt="Glomo">
+          </div>
+          <div class="appbar__right"></div>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="appbar-progress">
+          <div class="appbar-progress__bar" data-progress="50"></div>
+        </div>
+
+        <div class="glomo-card__top">
+          <div>
+            <div class="step-indicator">Step 1 of 2</div>
+            <h1 class="title is-6 mb-2">Your details</h1>
+            <p class="subtitle is-7 mb-2">
+              Share your details so we can send your personalised basket link on WhatsApp.
+            </p>
+          </div>
+        </div>
+
+        <div class="glomo-card__body">
+          <form id="step1Form">
+            <div class="columns is-multiline mt-1">
+              <div class="column is-12">
+                <label class="label">Full name</label>
+                <input id="nameField" class="input" type="text" placeholder="Your name" required>
+              </div>
+
+              <div class="column is-12">
+                <label class="label">WhatsApp number</label>
+                <input id="waField" class="input" type="tel" placeholder="e.g. +94 77 123 4567" required>
+                <p class="help">We’ll message your curated basket link here.</p>
+              </div>
+            </div>
+
+            <div class="columns is-vcentered mt-5">
+              <div class="column is-12">
+                <button class="button is-medium btn-gradient is-fullwidth" type="submit">
+                  Next
+                </button>
+              </div>
+            </div>
+
+            <p class="fineprint mt-3">
+              You can edit products later anytime (add/remove products and change sizes).
+            </p>
+          </form>
+        </div>
+      </div>
+
+      <a href="https://glomo.lk" target="_blank" class="copyright has-text-centered mt-4 fineprint">
+        © Glomo.lk
+      </a>
+    </div>
+  </section>
+
+  <script>
+    // ----- Progress bar animate -----
+    const bar = document.querySelector(".appbar-progress__bar");
+    requestAnimationFrame(() => {
+      if (bar) bar.style.width = (bar.dataset.progress || "0") + "%";
+    });
+
+    // ----- Slide entry direction -----
+    const dir = sessionStorage.getItem("glomo_nav_dir") || "forward";
+    document.body.classList.add(dir === "back" ? "enter-left" : "enter-right");
+
+    // ----- Intercept back link for exit animation -----
+    document.querySelectorAll("a[data-nav]").forEach(a => {
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        const nav = a.dataset.nav; // back | forward
+        sessionStorage.setItem("glomo_nav_dir", nav);
+
+        document.body.classList.add(nav === "back" ? "exit-left" : "exit-right");
+        setTimeout(() => window.location.href = a.href, 200);
+      });
+    });
+
+    // ----- Step data storage -----
+    const KEY = "glomo_earlybird";
+
+    function readDraft() {
+      try { return JSON.parse(sessionStorage.getItem(KEY) || "{}"); }
+      catch { return {}; }
+    }
+    function writeDraft(d) {
+      sessionStorage.setItem(KEY, JSON.stringify(d || {}));
+    }
+
+    const draft = readDraft();
+    const nameField = document.getElementById("nameField");
+    const waField = document.getElementById("waField");
+
+    if (draft.customer_name) nameField.value = draft.customer_name;
+    if (draft.customer_whatsapp) waField.value = draft.customer_whatsapp;
+
+    document.getElementById("step1Form").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      writeDraft({
+        ...draft,
+        customer_name: nameField.value.trim(),
+        customer_whatsapp: waField.value.trim()
+      });
+
+      // forward direction + exit anim
+      sessionStorage.setItem("glomo_nav_dir", "forward");
+      document.body.classList.add("exit-right");
+
+      setTimeout(() => window.location.href = "your-products.html", 200);
+    });
+  </script>
+</body>
+</html>

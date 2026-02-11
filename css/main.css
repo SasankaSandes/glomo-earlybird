@@ -267,3 +267,170 @@ body {
     display: block;
     width: 100%;
 }
+
+/* Landing step spacing tweaks */
+.landing-step .title { line-height: 1.25; }
+.landing-bullets .subtitle { color: rgba(0,0,0,.72) !important; }
+.landing-how { padding: 12px 14px; border: 1px solid rgba(0,0,0,.10); border-radius: 14px; background: rgba(255,255,255,.7); }
+.landing-skip { text-decoration: underline; opacity: .85; }
+
+
+/* -------------------------------------------
+   Full height mobile layout
+-------------------------------------------- */
+
+@media (max-width: 599px) {
+
+  /* Remove section padding */
+  .section.glomo-wrap {
+    padding: 0 !important;
+  }
+
+  /* Make wrapper fill full viewport height */
+  .glomo-wrap {
+    min-height: 100dvh; /* modern mobile-safe viewport */
+    align-items: stretch; /* stop vertical centering */
+  }
+
+  /* Container takes full height */
+  .glomo-wrap .container {
+    min-height: 100%;
+    padding: 0 !important;
+  }
+
+  /* Card becomes full-screen */
+  .glomo-card {
+    min-height: 100dvh;
+    border-radius: 0;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Body grows to push footer naturally */
+  .glomo-card__body {
+    flex: 1;
+  }
+}
+
+
+/* -----------------------------
+   App bar
+----------------------------- */
+
+.appbar{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.appbar__left,
+.appbar__right{
+  width: 60px;
+  display: flex;
+  align-items: center;
+}
+
+.appbar__center{
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.appbar__logo{
+  height: 26px;
+  object-fit: contain;
+}
+
+.appbar__back{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 36px;
+  height: 36px;
+
+  border-radius: 12px;
+  border: 1px solid rgba(0,0,0,.14);
+  background: rgba(0,0,0,.03);
+  color: var(--text);
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.appbar__back:active{
+  transform: translateY(1px);
+}
+
+/* Step indicator */
+
+.step-indicator{
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+  color: rgba(0,0,0,.55);
+  margin-bottom: 4px;
+}
+
+/* -------------------------------------------
+   Progress bar under app bar
+-------------------------------------------- */
+.appbar-progress {
+  height: 2px;
+  background: rgba(0,0,0,.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.appbar-progress__bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--c1), var(--c2), var(--c3));
+  transform-origin: left;
+  transition: width 420ms ease;
+}
+
+/* -------------------------------------------
+   Page slide transitions (multi-page)
+-------------------------------------------- */
+.page {
+  will-change: transform, opacity;
+}
+
+.page.enter-right {
+  animation: pageEnterRight 240ms ease-out both;
+}
+.page.enter-left {
+  animation: pageEnterLeft 240ms ease-out both;
+}
+
+.page.exit-left {
+  animation: pageExitLeft 220ms ease-in both;
+}
+.page.exit-right {
+  animation: pageExitRight 220ms ease-in both;
+}
+
+@keyframes pageEnterRight {
+  from { transform: translateX(14px); opacity: .0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+@keyframes pageEnterLeft {
+  from { transform: translateX(-14px); opacity: .0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+@keyframes pageExitLeft {
+  from { transform: translateX(0);     opacity: 1; }
+  to   { transform: translateX(-14px); opacity: .0; }
+}
+@keyframes pageExitRight {
+  from { transform: translateX(0);    opacity: 1; }
+  to   { transform: translateX(14px); opacity: .0; }
+}
