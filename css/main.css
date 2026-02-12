@@ -41,7 +41,6 @@ body {
 
 .glomo-card__top {
     padding: 26px 22px 20px;
-    border-bottom: 1px solid var(--line);
     background: #ffffff;
 }
 
@@ -195,6 +194,34 @@ body {
     font-size: 12px;
     font-weight: 600;
     color: #1a1a1d;
+}
+
+.icon-xsmall {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    display: block;
+}
+
+.icon-small {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    display: block;
+}
+
+.icon-medium {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    display: block;
+}
+
+.icon-large {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    display: block;
 }
 
 /* -------------------------------------------
@@ -483,7 +510,7 @@ body {
 .appbar__center{
   flex: 1;
   display: flex;
-  justify-content: center;
+  justify-content: left;
   align-items: center;
 }
 
@@ -497,12 +524,8 @@ body {
   align-items: center;
   justify-content: center;
 
-  width: 36px;
-  height: 36px;
-
-  border-radius: 12px;
-  border: 1px solid rgba(0,0,0,.14);
-  background: rgba(0,0,0,.03);
+  width: 40px;
+  height: 40px;
   color: var(--text);
   font-weight: 700;
   text-decoration: none;

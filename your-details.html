@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Glomo – Step 1</title>
+  <title>Glomo - Your Details</title>
 
   <link rel="stylesheet" href="css/bulma.min.css">
   <link rel="stylesheet" href="css/main.css">
@@ -21,7 +21,7 @@
         <!-- App bar -->
         <div class="appbar">
           <div class="appbar__left">
-            <a class="appbar__back" href="index.html" data-nav="back" aria-label="Back">←</a>
+            <a class="appbar__back" href="index.html" data-nav="back" aria-label="Back"><img class="icon-medium" src="assets/icons/arrow-left.svg" alt=""></a>
           </div>
           <div class="appbar__center">
             <img src="glomo-logo.png" class="appbar__logo" alt="Glomo">
@@ -37,9 +37,9 @@
         <div class="glomo-card__top">
           <div>
             <div class="step-indicator">Step 1 of 2</div>
-            <h1 class="title is-6 mb-2">Your details</h1>
+            <h1 class="title is-6 mb-2">Fill your details</h1>
             <p class="subtitle is-7 mb-2">
-              Share your details so we can send your personalised basket link on WhatsApp.
+                Below information helps us connect with you on WhatsApp, handle your orders conveniently, and ensure fast doorstep delivery.
             </p>
           </div>
         </div>
@@ -48,19 +48,19 @@
           <form id="step1Form">
             <div class="columns is-multiline mt-1">
               <div class="column is-12">
-                <label class="label">Full name</label>
-                <input id="nameField" class="input" type="text" name="customer_name" autocomplete="name" placeholder="Your name" required>
+                <label class="label">Name</label>
+                <input id="nameField" class="input" type="text" name="customer_name" autocomplete="name" placeholder="" required>
               </div>
 
               <div class="column is-12">
                 <label class="label">WhatsApp number</label>
-                <input id="waField" class="input" type="tel" name="customer_whatsapp" autocomplete="tel" inputmode="tel" placeholder="e.g. +94 77 123 4567" required>
-                <p class="help">We’ll message your curated basket link here.</p>
+                <input id="waField" class="input" type="tel" name="customer_whatsapp" autocomplete="tel" inputmode="tel" placeholder="" required>
+                <p class="help">We’ll send your basket link on WhatsApp.</p>
               </div>
 
               <div class="column is-12">
                 <label class="label">Delivery address</label>
-                <input id="addressField" class="input" name="customer_address" autocomplete="street-address" placeholder="House number, street, area" required>
+                <input id="addressField" class="input" name="customer_address" autocomplete="street-address" placeholder="House number, street" required>
               </div>
 
               <div class="column is-12">
@@ -79,10 +79,6 @@
                 </button>
               </div>
             </div>
-
-            <p class="fineprint mt-3">
-              You can edit products later anytime (add/remove products and change sizes).
-            </p>
           </form>
         </div>
       </div>
@@ -138,7 +134,7 @@
     let cityActiveIndex = -1;
 
     function cityLabel(item) {
-      return `${item.city} (Postal code: ${item.code})`;
+      return `${item.city} (${item.code})`;
     }
 
     function openMenu(menuEl) { menuEl?.classList.add("is-active"); }
