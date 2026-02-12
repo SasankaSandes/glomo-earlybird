@@ -144,12 +144,31 @@
     function openMenu(menuEl) { menuEl?.classList.add("is-active"); }
     function closeMenu(menuEl) { menuEl?.classList.remove("is-active"); }
 
+    function cityScore(item, q) {
+      const city = item.city.toLowerCase();
+      const code = String(item.code);
+      if (city === q) return 0;
+      if (city.startsWith(q)) return 1;
+      if (city.split(/\\s+/).some((word) => word.startsWith(q))) return 2;
+      if (code.startsWith(q)) return 3;
+      if (city.includes(q)) return 4;
+      if (code.includes(q)) return 5;
+      return 99;
+    }
+
     function filterCities(query) {
       const q = (query || "").trim().toLowerCase();
       if (!q) return CITIES.slice(0, 30);
-      return CITIES.filter((x) => {
-        return x.city.toLowerCase().includes(q) || String(x.code).includes(q);
-      }).slice(0, 30);
+      return CITIES
+        .map((x) => ({ item: x, score: cityScore(x, q) }))
+        .filter((x) => x.score < 99)
+        .sort((a, b) => {
+          if (a.score !== b.score) return a.score - b.score;
+          if (a.item.city.length !== b.item.city.length) return a.item.city.length - b.item.city.length;
+          return Number(a.item.code) - Number(b.item.code);
+        })
+        .slice(0, 30)
+        .map((x) => x.item);
     }
 
     function renderCityMenu(items) {
@@ -187,8 +206,20 @@
       cityField.value = cityLabel(item);
       cityField.dataset.code = item.code;
       cityField.dataset.city = item.city;
+      cityField.setCustomValidity("");
       closeMenu(cityMenu);
       cityActiveIndex = -1;
+    }
+
+    function markCityUnselected() {
+      delete cityField.dataset.code;
+      delete cityField.dataset.city;
+    }
+
+    function resolveCityFromValue(rawValue) {
+      const v = (rawValue || "").trim().toLowerCase();
+      if (!v) return null;
+      return CITIES.find((x) => cityLabel(x).toLowerCase() === v || x.city.toLowerCase() === v) || null;
     }
 
     async function loadCities() {
@@ -216,10 +247,20 @@
       refreshCityMenu(true);
     });
     cityField.addEventListener("input", () => {
+      markCityUnselected();
+      cityField.setCustomValidity("");
       cityActiveIndex = -1;
       refreshCityMenu(true);
     });
-    cityField.addEventListener("blur", () => setTimeout(() => closeMenu(cityMenu), 120));
+    cityField.addEventListener("blur", () => {
+      const matched = resolveCityFromValue(cityField.value);
+      if (matched) {
+        chooseCity(matched);
+      } else {
+        cityField.setCustomValidity("Please select a city from the suggestions.");
+      }
+      setTimeout(() => closeMenu(cityMenu), 120);
+    });
     cityField.addEventListener("keydown", (e) => {
       if (!cityMenu.classList.contains("is-active")) return;
       if (e.key === "ArrowDown") {
@@ -251,12 +292,21 @@
     document.getElementById("step1Form").addEventListener("submit", (e) => {
       e.preventDefault();
 
+      const selectedCity = resolveCityFromValue(cityField.value);
+      if (!selectedCity) {
+        cityField.setCustomValidity("Please select a city from the suggestions.");
+        cityField.reportValidity();
+        cityField.focus();
+        return;
+      }
+      chooseCity(selectedCity);
+
       writeDraft({
         ...draft,
         customer_name: nameField.value.trim(),
         customer_whatsapp: waField.value.trim(),
         customer_address: addressField.value.trim(),
-        customer_city: cityField.value
+        customer_city: cityLabel(selectedCity)
       });
 
       // forward direction + exit anim
@@ -266,7 +316,12 @@
       setTimeout(() => window.location.href = "your-products.html", 200);
     });
 
-    loadCities();
+    loadCities().then(() => {
+      if (draft.customer_city) {
+        const matched = resolveCityFromValue(draft.customer_city);
+        if (matched) chooseCity(matched);
+      }
+    });
   </script>
 </body>
 </html>
