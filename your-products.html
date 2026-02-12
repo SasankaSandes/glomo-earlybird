@@ -52,18 +52,20 @@
             <!-- Hidden fields filled from sessionStorage -->
             <input type="hidden" name="customer_name" id="hiddenName">
             <input type="hidden" name="customer_whatsapp" id="hiddenWhatsapp">
+            <input type="hidden" name="customer_address" id="hiddenAddress">
+            <input type="hidden" name="customer_city" id="hiddenCity">
 
             <div class="is-flex is-justify-content-space-between is-align-items-center mb-3">
               <div>
-                <h2 class="title is-6 mb-1" style="color:var(--text);">Add your favourite products</h2>
-                <p class="fineprint">Product brand, product name and size. Add as many as you want.</p>
+                <h2 class="title is-6 mb-1" style="color:var(--text);">Your products</h2>
+                <p class="fineprint">Add products by brand. You can add as many as you want.</p>
               </div>
             </div>
 
-            <div id="productsWrap" class="block" style="display:flex; flex-direction:column; gap:12px;"></div>
+            <div id="brandCards" class="block" style="display:flex; flex-direction:column; gap:12px;"></div>
 
-            <button type="button" id="addProductBtn" class="button btn-ghost">
-              + Add another product
+            <button type="button" id="openOverlayBtn" class="button btn-ghost">
+              + Add a product
             </button>
 
             <div class="columns is-vcentered mt-5">
@@ -89,35 +91,60 @@
     </div>
   </section>
 
-  <template id="productRowTpl">
-    <div class="product-block">
-      <div class="product-block__head">
-        <span class="tag is-dark">Product&nbsp;<span class="product-index"></span></span>
-        <button type="button" class="button is-small btn-danger-ghost remove-btn">Remove</button>
+  <!-- Full-screen overlay for add product -->
+  <div id="addOverlay" class="overlay" aria-hidden="true">
+    <div class="overlay__sheet" role="dialog" aria-modal="true" aria-labelledby="overlayTitle">
+      <div class="overlay__top">
+        <button type="button" class="button is-small btn-ghost" id="closeOverlayBtn">Close</button>
+        <div class="overlay__title" id="overlayTitle">Add a product</div>
+        <div style="width:64px"></div>
       </div>
 
-      <div class="columns is-multiline is-variable is-2">
-        <div class="column is-12">
+      <div class="overlay__body">
+        <div class="field">
           <label class="label">Brand</label>
           <div class="ac-wrap">
-            <input class="input brand-input" type="text" name="products[IDX][brand]" placeholder="e.g. Beauty of Joseon" required autocomplete="off">
-            <div class="ac-menu brand-menu" role="listbox" aria-label="Brand suggestions"></div>
+            <input id="overlayBrand" class="input" type="text" placeholder="Search brand" autocomplete="off" />
+            <div class="ac-menu" id="overlayBrandMenu" role="listbox" aria-label="Brand suggestions"></div>
           </div>
         </div>
 
-        <div class="column is-12">
+        <div class="field">
           <label class="label">Product name</label>
           <div class="ac-wrap">
-            <input class="input product-input" type="text" name="products[IDX][name]" placeholder="e.g. Relief Sun: Rice + Probiotics" required autocomplete="off">
-            <div class="ac-menu product-menu" role="listbox" aria-label="Product suggestions"></div>
+            <input id="overlayProduct" class="input" type="text" placeholder="Search product" autocomplete="off" />
+            <div class="ac-menu" id="overlayProductMenu" role="listbox" aria-label="Product suggestions"></div>
           </div>
         </div>
 
-        <div class="column is-12">
+        <div class="field">
           <label class="label">Size</label>
-          <input class="input" type="text" name="products[IDX][size]" placeholder="e.g. 50ml / 200ml" required>
+          <input id="overlaySize" class="input" type="text" placeholder="e.g. 50ml / 200ml" />
         </div>
+
+        <button type="button" id="addToBrandBtn" class="button is-medium btn-gradient is-fullwidth mt-3">
+          Add this product
+        </button>
+
+        <p class="fineprint mt-3">Tip: Add one product at a time. You can keep adding more brands.</p>
       </div>
+    </div>
+  </div>
+
+  <template id="brandCardTpl">
+    <div class="product-block brand-card">
+      <div class="product-block__head">
+        <span class="tag is-dark brand-title"></span>
+        <button type="button" class="button is-small btn-danger-ghost remove-brand">Remove</button>
+      </div>
+      <div class="brand-products"></div>
+    </div>
+  </template>
+
+  <template id="brandProductTpl">
+    <div class="brand-product-row">
+      <div class="brand-product-name"></div>
+      <div class="brand-product-size"></div>
     </div>
   </template>
 
@@ -152,19 +179,17 @@
     }
 
     const draft = readDraft();
-    if (!draft.customer_name || !draft.customer_whatsapp) {
+    if (!draft.customer_name || !draft.customer_whatsapp || !draft.customer_address || !draft.customer_city) {
       sessionStorage.setItem("glomo_nav_dir", "back");
       window.location.href = "your-details.html";
     }
 
     document.getElementById("hiddenName").value = draft.customer_name || "";
     document.getElementById("hiddenWhatsapp").value = draft.customer_whatsapp || "";
+    document.getElementById("hiddenAddress").value = draft.customer_address || "";
+    document.getElementById("hiddenCity").value = draft.customer_city || "";
 
-    // --- Products + autocomplete ---
-    const productsWrap = document.getElementById("productsWrap");
-    const addBtn = document.getElementById("addProductBtn");
-    const tpl = document.getElementById("productRowTpl");
-
+    // --- Products + autocomplete data ---
     let BRAND_PRODUCTS = {};
     let BRAND_LIST = [];
     const BRAND_LOOKUP = new Map();
@@ -174,9 +199,11 @@
       const key = (input || "").trim().toLowerCase();
       return BRAND_LOOKUP.get(key) || null;
     }
+
     function uniqSorted(arr) {
       return [...new Set(arr)].sort((a, b) => a.localeCompare(b));
     }
+
     async function loadBrandProducts() {
       try {
         const res = await fetch("brands-and-products.json", { cache: "no-store" });
@@ -186,37 +213,10 @@
         BRAND_LOOKUP.clear();
         BRAND_LIST.forEach(b => BRAND_LOOKUP.set(b.toLowerCase(), b));
         dataLoaded = true;
-        [...productsWrap.children].forEach(block => setupAutocompleteForRow(block));
       } catch (err) {
         console.warn(err);
         dataLoaded = false;
       }
-    }
-
-    function openMenu(menuEl) { menuEl?.classList.add("is-active"); }
-    function closeMenu(menuEl) { menuEl?.classList.remove("is-active"); }
-
-    function renderMenu(menuEl, items, onPick) {
-      if (!menuEl) return;
-      menuEl.innerHTML = "";
-      if (!items || items.length === 0) {
-        const empty = document.createElement("div");
-        empty.className = "ac-empty";
-        empty.textContent = "No suggestions — you can type your own.";
-        menuEl.appendChild(empty);
-        return;
-      }
-      items.slice(0, 30).forEach((label) => {
-        const div = document.createElement("div");
-        div.className = "ac-item";
-        div.setAttribute("role", "option");
-        div.textContent = label;
-        div.addEventListener("mousedown", (e) => {
-          e.preventDefault();
-          onPick(label);
-        });
-        menuEl.appendChild(div);
-      });
     }
 
     function filterList(list, query) {
@@ -232,45 +232,129 @@
       return uniqSorted(raw);
     }
 
-    function setupAutocompleteForRow(block) {
-      if (!dataLoaded || !block) return;
+    // --- Overlay + keyboard friendly autocomplete ---
+    const overlay = document.getElementById("addOverlay");
+    const openOverlayBtn = document.getElementById("openOverlayBtn");
+    const closeOverlayBtn = document.getElementById("closeOverlayBtn");
+    const brandInput = document.getElementById("overlayBrand");
+    const productInput = document.getElementById("overlayProduct");
+    const sizeInput = document.getElementById("overlaySize");
+    const brandMenu = document.getElementById("overlayBrandMenu");
+    const productMenu = document.getElementById("overlayProductMenu");
+    const addToBrandBtn = document.getElementById("addToBrandBtn");
 
-      const brandInput = block.querySelector(".brand-input");
-      const productInput = block.querySelector(".product-input");
-      const brandMenu = block.querySelector(".brand-menu");
-      const productMenu = block.querySelector(".product-menu");
-      if (!brandInput || !productInput || !brandMenu || !productMenu) return;
-      if (block.dataset.acBound === "1") return;
-      block.dataset.acBound = "1";
-
-      function refreshBrandMenu() {
-        renderMenu(brandMenu, filterList(BRAND_LIST, brandInput.value), (picked) => {
-          brandInput.value = picked;
-          closeMenu(brandMenu);
-          refreshProductMenu(true);
-          productInput.focus();
-        });
-      }
-
-      function refreshProductMenu(openIfNeeded = false) {
-        const list = productsForBrand(brandInput.value);
-        renderMenu(productMenu, filterList(list, productInput.value), (picked) => {
-          productInput.value = picked;
-          closeMenu(productMenu);
-        });
-        if (openIfNeeded) openMenu(productMenu);
-      }
-
-      brandInput.addEventListener("focus", () => { refreshBrandMenu(); openMenu(brandMenu); });
-      brandInput.addEventListener("input", () => { refreshBrandMenu(); openMenu(brandMenu); });
-      brandInput.addEventListener("change", () => { refreshProductMenu(false); });
-
-      productInput.addEventListener("focus", () => { refreshProductMenu(); openMenu(productMenu); });
-      productInput.addEventListener("input", () => { refreshProductMenu(); openMenu(productMenu); });
-
-      brandInput.addEventListener("blur", () => setTimeout(() => closeMenu(brandMenu), 120));
-      productInput.addEventListener("blur", () => setTimeout(() => closeMenu(productMenu), 120));
+    function openOverlay() {
+      overlay.classList.add("is-active");
+      overlay.setAttribute("aria-hidden", "false");
+      brandInput.focus();
     }
+
+    function closeOverlay() {
+      overlay.classList.remove("is-active");
+      overlay.setAttribute("aria-hidden", "true");
+      brandInput.value = "";
+      productInput.value = "";
+      sizeInput.value = "";
+      closeMenu(brandMenu);
+      closeMenu(productMenu);
+    }
+
+    openOverlayBtn.addEventListener("click", openOverlay);
+    closeOverlayBtn.addEventListener("click", closeOverlay);
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) closeOverlay();
+    });
+
+    function openMenu(menuEl) { menuEl?.classList.add("is-active"); }
+    function closeMenu(menuEl) { menuEl?.classList.remove("is-active"); }
+
+    function renderMenu(menuEl, items, onPick, state) {
+      if (!menuEl) return;
+      menuEl.innerHTML = "";
+      if (!items || items.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "ac-empty";
+        empty.textContent = "No suggestions — you can type your own.";
+        menuEl.appendChild(empty);
+        return;
+      }
+
+      items.slice(0, 30).forEach((label, idx) => {
+        const div = document.createElement("div");
+        div.className = "ac-item";
+        div.setAttribute("role", "option");
+        div.textContent = label;
+        if (state && idx === state.activeIndex) div.classList.add("is-active");
+
+        div.addEventListener("mousedown", (e) => {
+          e.preventDefault();
+          onPick(label);
+        });
+
+        menuEl.appendChild(div);
+      });
+    }
+
+    function makeKeyboardMenu(inputEl, menuEl, getItems, onPick) {
+      const state = { activeIndex: -1, items: [] };
+
+      function refresh(openIfNeeded = true) {
+        state.items = getItems();
+        if (state.activeIndex >= state.items.length) state.activeIndex = -1;
+        renderMenu(menuEl, state.items, onPick, state);
+        if (openIfNeeded) openMenu(menuEl);
+      }
+
+      inputEl.addEventListener("focus", () => refresh(true));
+      inputEl.addEventListener("input", () => { state.activeIndex = -1; refresh(true); });
+      inputEl.addEventListener("blur", () => setTimeout(() => closeMenu(menuEl), 120));
+
+      inputEl.addEventListener("keydown", (e) => {
+        if (!menuEl.classList.contains("is-active")) return;
+
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          state.activeIndex = Math.min(state.activeIndex + 1, state.items.length - 1);
+          renderMenu(menuEl, state.items, onPick, state);
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          state.activeIndex = Math.max(state.activeIndex - 1, 0);
+          renderMenu(menuEl, state.items, onPick, state);
+        } else if (e.key === "Enter") {
+          if (state.activeIndex >= 0) {
+            e.preventDefault();
+            onPick(state.items[state.activeIndex]);
+          }
+        } else if (e.key === "Escape") {
+          closeMenu(menuEl);
+        }
+      });
+
+      return { refresh };
+    }
+
+    const brandMenuState = makeKeyboardMenu(
+      brandInput,
+      brandMenu,
+      () => filterList(BRAND_LIST, brandInput.value),
+      (picked) => {
+        brandInput.value = picked;
+        closeMenu(brandMenu);
+        productMenuState.refresh(true);
+        productInput.focus();
+      }
+    );
+
+    const productMenuState = makeKeyboardMenu(
+      productInput,
+      productMenu,
+      () => filterList(productsForBrand(brandInput.value), productInput.value),
+      (picked) => {
+        productInput.value = picked;
+        closeMenu(productMenu);
+        sizeInput.focus();
+      }
+    );
 
     document.addEventListener("mousedown", (e) => {
       document.querySelectorAll(".ac-menu.is-active").forEach(menu => {
@@ -279,42 +363,66 @@
       });
     });
 
-    addProductRow();
-    addBtn.addEventListener("click", () => addProductRow());
+    // --- Brand grouping render ---
+    const brandCards = document.getElementById("brandCards");
+    const brandCardTpl = document.getElementById("brandCardTpl");
+    const brandProductTpl = document.getElementById("brandProductTpl");
+    const basket = new Map();
 
-    function addProductRow() {
-      const idx = productsWrap.children.length;
-      const node = tpl.content.cloneNode(true);
-      const block = node.querySelector(".product-block");
-      block.querySelector(".product-index").textContent = (idx + 1);
+    function renderBasket() {
+      brandCards.innerHTML = "";
+      [...basket.entries()].forEach(([brand, items]) => {
+        const node = brandCardTpl.content.cloneNode(true);
+        const card = node.querySelector(".brand-card");
+        const title = node.querySelector(".brand-title");
+        const list = node.querySelector(".brand-products");
+        const removeBtn = node.querySelector(".remove-brand");
 
-      block.querySelectorAll("[name]").forEach(el => {
-        el.name = el.name.replaceAll("IDX", idx);
-      });
-
-      block.querySelector(".remove-btn").addEventListener("click", () => {
-        block.remove();
-        reindexRows();
-      });
-
-      productsWrap.appendChild(node);
-      setupAutocompleteForRow(productsWrap.lastElementChild);
-    }
-
-    function reindexRows() {
-      [...productsWrap.children].forEach((block, newIdx) => {
-        block.querySelector(".product-index").textContent = (newIdx + 1);
-        block.querySelectorAll("[name]").forEach(el => {
-          el.name = el.name.replace(/products\\[\\d+\\]/, `products[${newIdx}]`);
+        title.textContent = brand;
+        removeBtn.addEventListener("click", () => {
+          basket.delete(brand);
+          renderBasket();
         });
+
+        items.forEach(item => {
+          const row = brandProductTpl.content.cloneNode(true);
+          row.querySelector(".brand-product-name").textContent = item.name;
+          row.querySelector(".brand-product-size").textContent = item.size || "—";
+          list.appendChild(row);
+        });
+
+        brandCards.appendChild(card);
       });
     }
+
+    function addProductToBasket() {
+      const rawBrand = brandInput.value.trim();
+      const brand = canonicalBrand(rawBrand) || rawBrand;
+      const name = productInput.value.trim();
+      const size = sizeInput.value.trim();
+
+      if (!brand || !name) {
+        brandInput.focus();
+        return;
+      }
+
+      if (!basket.has(brand)) basket.set(brand, []);
+      basket.get(brand).push({ name, size });
+      renderBasket();
+      closeOverlay();
+    }
+
+    addToBrandBtn.addEventListener("click", addProductToBasket);
+    sizeInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addProductToBasket();
+      }
+    });
 
     // Submit MVP
     document.getElementById("earlybirdForm").addEventListener("submit", (e) => {
       e.preventDefault();
-
-      // forward-ish exit
       sessionStorage.setItem("glomo_nav_dir", "forward");
       document.body.classList.add("exit-right");
 

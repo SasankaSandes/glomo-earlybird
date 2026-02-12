@@ -57,6 +57,19 @@
                 <input id="waField" class="input" type="tel" name="customer_whatsapp" autocomplete="tel" inputmode="tel" placeholder="e.g. +94 77 123 4567" required>
                 <p class="help">We’ll message your curated basket link here.</p>
               </div>
+
+              <div class="column is-12">
+                <label class="label">Delivery address</label>
+                <input id="addressField" class="input" name="customer_address" autocomplete="street-address" placeholder="House number, street, area" required>
+              </div>
+
+              <div class="column is-12">
+                <label class="label">City</label>
+                <div class="ac-wrap">
+                  <input id="cityField" class="input" type="text" name="customer_city" autocomplete="off" placeholder="Start typing your city" required>
+                  <div class="ac-menu" id="cityMenu" role="listbox" aria-label="City suggestions"></div>
+                </div>
+              </div>
             </div>
 
             <div class="columns is-vcentered mt-5">
@@ -117,9 +130,123 @@
     const draft = readDraft();
     const nameField = document.getElementById("nameField");
     const waField = document.getElementById("waField");
+    const addressField = document.getElementById("addressField");
+    const cityField = document.getElementById("cityField");
+    const cityMenu = document.getElementById("cityMenu");
+    let CITIES = [];
+    let citySuggestions = [];
+    let cityActiveIndex = -1;
+
+    function cityLabel(item) {
+      return `${item.city} - postal code:${item.code}`;
+    }
+
+    function openMenu(menuEl) { menuEl?.classList.add("is-active"); }
+    function closeMenu(menuEl) { menuEl?.classList.remove("is-active"); }
+
+    function filterCities(query) {
+      const q = (query || "").trim().toLowerCase();
+      if (!q) return CITIES.slice(0, 30);
+      return CITIES.filter((x) => {
+        return x.city.toLowerCase().includes(q) || String(x.code).includes(q);
+      }).slice(0, 30);
+    }
+
+    function renderCityMenu(items) {
+      cityMenu.innerHTML = "";
+      if (!items.length) {
+        const empty = document.createElement("div");
+        empty.className = "ac-empty";
+        empty.textContent = "No suggestions found.";
+        cityMenu.appendChild(empty);
+        return;
+      }
+
+      items.forEach((item, idx) => {
+        const div = document.createElement("div");
+        div.className = "ac-item";
+        if (idx === cityActiveIndex) div.classList.add("is-active");
+        div.setAttribute("role", "option");
+        div.textContent = cityLabel(item);
+        div.addEventListener("mousedown", (e) => {
+          e.preventDefault();
+          chooseCity(item);
+        });
+        cityMenu.appendChild(div);
+      });
+    }
+
+    function refreshCityMenu(openIfNeeded = true) {
+      citySuggestions = filterCities(cityField.value);
+      if (cityActiveIndex >= citySuggestions.length) cityActiveIndex = -1;
+      renderCityMenu(citySuggestions);
+      if (openIfNeeded) openMenu(cityMenu);
+    }
+
+    function chooseCity(item) {
+      cityField.value = cityLabel(item);
+      cityField.dataset.code = item.code;
+      cityField.dataset.city = item.city;
+      closeMenu(cityMenu);
+      cityActiveIndex = -1;
+    }
+
+    async function loadCities() {
+      try {
+        const res = await fetch("cities.json", { cache: "no-store" });
+        if (!res.ok) throw new Error("Failed to load cities.json");
+        const data = await res.json();
+        CITIES = Array.isArray(data)
+          ? data
+              .filter((x) => x && x.city && x.code)
+              .sort((a, b) => {
+                const aCode = Number(a.code);
+                const bCode = Number(b.code);
+                return aCode - bCode;
+              })
+          : [];
+      } catch (err) {
+        console.warn(err);
+        CITIES = [];
+      }
+    }
+
+    cityField.addEventListener("focus", () => {
+      cityActiveIndex = -1;
+      refreshCityMenu(true);
+    });
+    cityField.addEventListener("input", () => {
+      cityActiveIndex = -1;
+      refreshCityMenu(true);
+    });
+    cityField.addEventListener("blur", () => setTimeout(() => closeMenu(cityMenu), 120));
+    cityField.addEventListener("keydown", (e) => {
+      if (!cityMenu.classList.contains("is-active")) return;
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        cityActiveIndex = Math.min(cityActiveIndex + 1, citySuggestions.length - 1);
+        renderCityMenu(citySuggestions);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        cityActiveIndex = Math.max(cityActiveIndex - 1, 0);
+        renderCityMenu(citySuggestions);
+      } else if (e.key === "Enter" && cityActiveIndex >= 0) {
+        e.preventDefault();
+        chooseCity(citySuggestions[cityActiveIndex]);
+      } else if (e.key === "Escape") {
+        closeMenu(cityMenu);
+      }
+    });
+
+    document.addEventListener("mousedown", (e) => {
+      const wrap = cityMenu.closest(".ac-wrap");
+      if (wrap && !wrap.contains(e.target)) closeMenu(cityMenu);
+    });
 
     if (draft.customer_name) nameField.value = draft.customer_name;
     if (draft.customer_whatsapp) waField.value = draft.customer_whatsapp;
+    if (draft.customer_address) addressField.value = draft.customer_address;
+    if (draft.customer_city) cityField.value = draft.customer_city;
 
     document.getElementById("step1Form").addEventListener("submit", (e) => {
       e.preventDefault();
@@ -127,7 +254,9 @@
       writeDraft({
         ...draft,
         customer_name: nameField.value.trim(),
-        customer_whatsapp: waField.value.trim()
+        customer_whatsapp: waField.value.trim(),
+        customer_address: addressField.value.trim(),
+        customer_city: cityField.value
       });
 
       // forward direction + exit anim
@@ -136,6 +265,8 @@
 
       setTimeout(() => window.location.href = "your-products.html", 200);
     });
+
+    loadCities();
   </script>
 </body>
 </html>
