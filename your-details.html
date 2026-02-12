@@ -14,7 +14,7 @@
 </head>
 
 <body class="page">
-  <section class="section glomo-wrap">
+  <section class="glomo-wrap">
     <div class="container">
       <div class="glomo-card">
 
@@ -34,27 +34,22 @@
           <div class="appbar-progress__bar" data-progress="50"></div>
         </div>
 
-        <div class="glomo-card__top">
+        <div class="glomo-card-body">
           <div>
             <div class="step-indicator">Step 1 of 2</div>
-            <h1 class="title is-6 mb-2">Fill your details</h1>
-            <p class="subtitle is-7 mb-2">
-                Below information helps us connect with you on WhatsApp, handle your orders conveniently, and ensure fast doorstep delivery.
-            </p>
+            <h1 class="title">Fill your details</h1>
+          <h3 class="subtitle">Below information helps us connect with you on WhatsApp, handle your orders conveniently, and ensure fast doorstep delivery.</h3>
           </div>
-        </div>
-
-        <div class="glomo-card__body">
           <form id="step1Form">
-            <div class="columns is-multiline mt-1">
+            <div class="columns is-multiline">
               <div class="column is-12">
                 <label class="label">Name</label>
-                <input id="nameField" class="input" type="text" name="customer_name" autocomplete="name" placeholder="" required>
+                <input id="nameField" class="input" type="text" name="customer_name" autocomplete="name" placeholder="Type your name" required>
               </div>
 
               <div class="column is-12">
                 <label class="label">WhatsApp number</label>
-                <input id="waField" class="input" type="tel" name="customer_whatsapp" autocomplete="tel" inputmode="tel" placeholder="" required>
+                <input id="waField" class="input" type="tel" name="customer_whatsapp" autocomplete="tel" inputmode="tel" placeholder="Type your WhatsApp number" required>
                 <p class="help">We’ll send your basket link on WhatsApp.</p>
               </div>
 
@@ -72,10 +67,10 @@
               </div>
             </div>
 
-            <div class="columns is-vcentered mt-5">
+            <div class="columns is-vcentered">
               <div class="column is-12">
-                <button class="button is-medium btn-gradient is-fullwidth" type="submit">
-                  Next
+                <button id="startFlow" class="button is-medium btn-gradient is-fullwidth cta" type="submit">
+            Next, add my products&nbsp;<img class="icon-medium" src="assets/icons/arrow-right.svg" alt="">
                 </button>
               </div>
             </div>

@@ -31,10 +31,6 @@ body {
     background: radial-gradient(1200px 400px at 50% -120px, #ffffff 0%, #f7f7f8 60%);
 }
 
-.section.glomo-wrap {
-    padding: 20px 12px;
-}
-
 .glomo-wrap .container {
     width: 100%;
     max-width: 500px !important;
@@ -53,9 +49,8 @@ body {
     flex-direction: column;
 }
 
-.glomo-card__top {
-    padding: 26px 22px 20px;
-    background: #ffffff;
+.glomo-card-body {
+    padding: 24px 20px;
 }
 
 .brand-row {
@@ -65,11 +60,6 @@ body {
 
 .logo {
     height: 40px;
-}
-
-.glomo-card__body {
-    padding: 22px 22px 26px;
-    flex: 1;
 }
 
 .help,
@@ -185,18 +175,18 @@ body {
 }
 
 /* Landing */
-.landing__content {
+.content {
     padding: 34px 22px 28px;
 }
 
-.landing__logo {
+.logo {
     width: 150px;
     height: auto;
     display: block;
     margin-bottom: 32px;
 }
 
-.landing__title {
+.title {
     margin: 0;
     max-width: 560px;
     font-size: 24px;
@@ -206,14 +196,14 @@ body {
     color: #141821;
 }
 
-.landing__subtitle {
+.subtitle {
     margin: 12px 0 0;
     font-size: 12px;
     line-height: 1.3;
     color: #626670 !important;
 }
 
-.landing__steps {
+.steps {
     margin-top: 32px;
     border: 1px solid rgba(20, 24, 33, 0.10);
     border-radius: 18px;
@@ -221,7 +211,7 @@ body {
     padding: 8px 16px;
 }
 
-.landing__step {
+.step {
     display: grid;
     grid-template-columns: 52px 1fr;
     align-items: center;
@@ -229,25 +219,25 @@ body {
     padding: 14px 0;
 }
 
-.landing__step+.landing__step {
+.step+.step {
     border-top: 1px solid rgba(20, 24, 33, 0.06);
 }
 
-.landing__step-no {
+.step-no {
     font-size: 20px;
     line-height: 1;
     font-weight: 500;
     color: #9ca0a8;
 }
 
-.landing__step-text {
+.step-text {
     font-size: 12px;
     line-height: 1.25;
     color: #171b23;
     letter-spacing: -0.1px;
 }
 
-.landing__cta {
+.cta {
     margin-top: 34px;
     height: 66px;
     border-radius: 24px;
@@ -255,7 +245,7 @@ body {
     font-weight: 700;
 }
 
-.landing__footnote {
+.footnote {
     margin: 16px 0 0;
     text-align: center;
     font-size: 11px;
@@ -592,4 +582,8 @@ body {
 @keyframes pageExitRight {
   from { transform: translateX(0);    opacity: 1; }
   to   { transform: translateX(14px); opacity: .0; }
+}
+
+#step1Form {    
+    margin-top: 32px;
 }
