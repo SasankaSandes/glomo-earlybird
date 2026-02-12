@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -19,42 +20,32 @@
 <body>
   <section class="section glomo-wrap">
     <div class="container">
-      <div class="glomo-card">
-        <div class="glomo-card__top">
-          <div class="brand-row">
-            <img class="logo mb-2" src="glomo-logo.png" alt="Glomo logo">
+      <div class="glomo-card landing">
+        <div class="glomo-card__top landing__content">
+          <img class="landing__logo" src="glomo-logo.png" alt="Glomo logo">
 
-            <div class="landing-step">
-              <h1 class="title is-5 mb-3">A personal care routine, curated.</h1>
+          <h1 class="landing__title">Shopping for personal care<br> just got smarter</h1>
+          <p class="landing__subtitle">Zero browsing. Just WhatsApp.</p>
 
-              <p class="subtitle is-7 mb-3 lede">
-                Share your favourites once. We’ll build your personalised basket and send it via WhatsApp.
-              </p>
-
-              <div class="landing-points mb-4">
-                <p class="subtitle is-7 mb-2">No more hunting across multiple sites.</p>
-                <p class="subtitle is-7 mb-0">No more re‑entering addresses and card details.</p>
-              </div>
-
-              <div class="landing-steps mb-4">
-                <div class="step-chip">1. Tell us what you use</div>
-                <div class="step-chip">2. We curate your basket</div>
-                <div class="step-chip">3. Reorder anytime in WhatsApp</div>
-              </div>
-
-              <div class="buttons is-flex is-flex-direction-column" style="gap:10px;">
-                <a id="startFlow" class="button is-medium btn-gradient is-fullwidth" href="your-details.html">
-                  Create My Personal Basket
-                </a>
-                <p class="fineprint has-text-centered">Takes less than 2 minutes.</p>
-              </div>
-
-              <p class="fineprint mt-4">
-                Earlybird access: You’re helping us build Glomo around real routines. Your basket stays editable anytime.
-              </p>
+          <div class="landing__steps">
+            <div class="landing__step">
+              <div class="landing__step-no">01</div>
+              <div class="landing__step-text">Tell us what you use</div>
             </div>
-
+            <div class="landing__step">
+              <div class="landing__step-no">02</div>
+              <div class="landing__step-text">We build your personnalised basket</div>
+            </div>
+            <div class="landing__step">
+              <div class="landing__step-no">03</div>
+              <div class="landing__step-text">Reorder anytime with a simple WhatsApp message</div>
+            </div>
           </div>
+
+          <a id="startFlow" class="button is-medium btn-gradient is-fullwidth landing__cta" href="your-details.html">
+            Yes, let&apos;s build my basket
+          </a>
+          <p class="landing__footnote">Takes less than 2 minutes. No commitment.</p>
         </div>
 
         <div class="glomo-card__body">
@@ -76,4 +67,5 @@
     });
   </script>
 </body>
+
 </html>
