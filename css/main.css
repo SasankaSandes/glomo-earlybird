@@ -435,6 +435,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  min-height: 56px;
 
   padding: 10px 14px;
   border-bottom: 1px solid var(--line);
@@ -504,6 +505,24 @@ body {
   background: linear-gradient(90deg, var(--c1), var(--c2), var(--c3));
   transform-origin: left;
   transition: width 420ms ease;
+}
+
+/* Keep app bar fixed while page content scrolls under it (details/products pages) */
+.page .glomo-card {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.page .appbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.page .appbar-progress {
+  position: sticky;
+  top: 56px;
+  z-index: 29;
 }
 
 /* Immersive mobile layout (Mobile L and below) */
@@ -586,4 +605,15 @@ body {
 
 #step1Form {    
     margin-top: 32px;
+}
+
+.glomo-form .label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.glomo-form .input {
+    font-size: 14px;
+    height: 48px;
 }
